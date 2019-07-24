@@ -8,5 +8,7 @@ class UserBloc {
     _repository = coffeeGetIt<UserRepository>();
   }
 
+  Future<bool> isAuthenticated() async => _repository.isAuthenticated();
+
   String getText() => _repository.getText();
 }
