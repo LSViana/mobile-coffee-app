@@ -1,4 +1,4 @@
-import 'package:coffee_app/business/ui/splash_page.dart';
+import 'package:coffee_app/ui/splash_page.dart';
 import 'package:coffee_app/definitions/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n_delegate.dart';

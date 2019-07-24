@@ -1,3 +1,5 @@
+import 'package:coffee_app/ui/home_page.dart';
+import 'package:coffee_app/ui/login_page.dart';
 import 'package:coffee_app/business/user/user_bloc.dart';
 import 'package:coffee_app/main.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +42,7 @@ class _SplashPageState extends State<SplashPage> {
               ),
               Text(FlutterI18n.translate(context, 'names.app'),
                   style:
-                      theme.textTheme.title.copyWith(color: theme.accentColor))
+                      theme.textTheme.title.copyWith(color: theme.primaryColor))
             ],
           ),
         ),
@@ -49,7 +51,10 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   Future<void> handleSplashNextRoute() async {
-    final isAuthenticated = await _userBloc.isAuthenticated;
-    // TODO Send to another page
+    final isAuthenticated = await _userBloc.isAuthenticated();
+    final nextRoute = isAuthenticated ? HomePage() : LoginPage();
+    Navigator.of(context).pushReplacement(MaterialPageRoute(
+      builder: (context) => nextRoute,
+    ));
   }
 }

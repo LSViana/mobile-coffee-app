@@ -1,5 +1,17 @@
 {
     "names": {
         "app": "Coffee App"
+    },
+    "signIn": {
+        "title": "Sign In",
+        "email": "E-mail",
+        "password": "Password"
+    },
+    "signUp": {
+        "title": "Sign Up"
+    },
+    "errors": {
+        "validEmail": "E-mail must be valid",
+        "validPassword": "Password must have at least 8 characters"
     }
 }
