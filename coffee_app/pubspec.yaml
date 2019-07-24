@@ -1,0 +1,18 @@
+name: Coffee App
+description: A Flutter project to request coffee and more with a fluid and intuitive experience.
+
+version: 1.0.0
+
+environment:
+  sdk: ">=2.2.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
