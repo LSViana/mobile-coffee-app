@@ -1,16 +1,23 @@
 {
+    "actions": {
+        "close": "Close"
+    },
     "names": {
         "app": "Coffee App"
     },
     "signIn": {
         "title": "Sign In",
         "email": "E-mail",
-        "password": "Password"
+        "password": "Password",
+        "invalidCredentials": "Invalid credentials",
+        "invalidCredentialsDescription": "Review the values you inserted into e-mail and password before trying again"
     },
     "signUp": {
         "title": "Sign Up"
     },
     "errors": {
+        "general": "Something weird happened",
+        "generalDescription": "We captured this error and we know it's happened, we're sorry for the trouble...",
         "validEmail": "E-mail must be valid",
         "validPassword": "Password must have at least 8 characters"
     }

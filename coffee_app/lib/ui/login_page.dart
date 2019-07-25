@@ -1,4 +1,11 @@
+import 'package:coffee_app/business/exceptions/not_found_exception.dart';
+import 'package:coffee_app/business/transfer/authenticated.dart';
 import 'package:coffee_app/business/transfer/authentication.dart';
+import 'package:coffee_app/business/user/user_bloc.dart';
+import 'package:coffee_app/main.dart';
+import 'package:coffee_app/ui/home_page.dart';
+import 'package:coffee_app/widgets/error_dialog.dart';
+import 'package:coffee_app/widgets/general_error_dialog.dart';
 import 'package:coffee_app/widgets/title_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
@@ -12,11 +19,35 @@ class LoginPage extends StatefulWidget {
 class LoginPageState extends State<LoginPage> {
   GlobalKey<FormState> _formKey;
   Authentication _authentication;
+  UserBloc _userBloc;
 
   Future<void> _formSubmit() async {
     _formKey.currentState.save();
     if (_formKey.currentState.validate()) {
-      // TODO Authenticate
+      try {
+        final result = await _userBloc.authenticate(_authentication);
+        await _userBloc.saveCurrentAuthentication(result);
+        await Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (context) => HomePage()
+        ));
+      } on NotFoundException {
+        showDialog(
+          context: context,
+          barrierDismissible: true,
+          builder: (context) => ErrorDialog(
+            errorText: FlutterI18n.translate(context, 'signIn.invalidCredentials'),
+            errorDescription: Text(
+              FlutterI18n.translate(context, 'signIn.invalidCredentialsDescription'),
+            ),
+          ),
+        );
+      } catch (e) {
+        showDialog(
+          context: context,
+          barrierDismissible: true,
+          builder: (context) => GeneralErrorDialog(),
+        );
+      }
     }
   }
 
@@ -29,6 +60,7 @@ class LoginPageState extends State<LoginPage> {
   void initState() {
     super.initState();
     //
+    _userBloc = coffeeGetIt<UserBloc>();
     _authentication = Authentication();
     _formKey = GlobalKey<FormState>();
   }
@@ -56,6 +88,7 @@ class LoginPageState extends State<LoginPage> {
                 children: <Widget>[
                   TextFormField(
                     cursorColor: theme.primaryColor,
+                    initialValue: 'coffee.drinker@email.com',
                     decoration: InputDecoration(
                       labelText: FlutterI18n.translate(context, 'signIn.email'),
                     ),
@@ -69,6 +102,8 @@ class LoginPageState extends State<LoginPage> {
                   ),
                   TextFormField(
                     cursorColor: theme.primaryColor,
+                    initialValue: 'Asdf1234',
+                    obscureText: true,
                     decoration: InputDecoration(
                       labelText:
                           FlutterI18n.translate(context, 'signIn.password'),

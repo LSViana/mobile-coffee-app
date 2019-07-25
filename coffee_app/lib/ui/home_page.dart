@@ -10,13 +10,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  UserBloc _userBloc;
-
   @override
   void initState() {
     super.initState();
-    //
-    _userBloc = coffeeGetIt<UserBloc>();
   }
 
   @override
@@ -30,7 +26,7 @@ class _HomePageState extends State<HomePage> {
       body: Container(
         padding: const EdgeInsets.all(16),
         child: Text(
-          _userBloc.getText()
+          '_userBloc.getText()'
         ),
       ),
     );

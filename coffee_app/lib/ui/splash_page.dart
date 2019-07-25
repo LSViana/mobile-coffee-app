@@ -35,7 +35,7 @@ class _SplashPageState extends State<SplashPage> {
               Icon(
                 Icons.shopping_basket,
                 size: 48,
-                color: theme.accentColor,
+                color: theme.primaryColor,
               ),
               SizedBox(
                 height: 16,
@@ -51,6 +51,9 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   Future<void> handleSplashNextRoute() async {
+    // It gives the user sometime to see the splash
+    await Future.delayed(Duration(seconds: 1));
+    //
     final isAuthenticated = await _userBloc.isAuthenticated();
     final nextRoute = isAuthenticated ? HomePage() : LoginPage();
     Navigator.of(context).pushReplacement(MaterialPageRoute(

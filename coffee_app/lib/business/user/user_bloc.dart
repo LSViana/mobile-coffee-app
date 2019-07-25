@@ -1,3 +1,5 @@
+import 'package:coffee_app/business/transfer/authenticated.dart';
+import 'package:coffee_app/business/transfer/authentication.dart';
 import 'package:coffee_app/business/user/user_repository.dart';
 import 'package:coffee_app/main.dart';
 
@@ -8,7 +10,15 @@ class UserBloc {
     _repository = coffeeGetIt<UserRepository>();
   }
 
-  Future<bool> isAuthenticated() async => _repository.isAuthenticated();
+  Future<bool> isAuthenticated()
+    => _repository.isAuthenticated();
 
-  String getText() => _repository.getText();
+  Future<Authenticated> authenticate(Authentication authentication)
+    => _repository.authenticate(authentication);
+
+  Future<void> saveCurrentAuthentication(Authenticated authenticated)
+    => _repository.saveCurrentAuthenticated(authenticated);
+
+  Future<Authenticated> getCurrentAuthentication()
+    => _repository.getCurrentAuthenticated();
 }

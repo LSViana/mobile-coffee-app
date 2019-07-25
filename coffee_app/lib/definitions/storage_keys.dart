@@ -1,3 +1,3 @@
 class StorageKeys {
-  static String get user => "user";
+  static String get authenticated => "authenticated";
 }
