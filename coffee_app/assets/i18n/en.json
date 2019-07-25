@@ -1,6 +1,8 @@
 {
     "actions": {
-        "close": "Close"
+        "close": "Close",
+        "exit": "Exit",
+        "addToCart": "Add to cart"
     },
     "names": {
         "app": "Coffee App"
@@ -14,6 +16,23 @@
     },
     "signUp": {
         "title": "Sign Up"
+    },
+    "stores": {
+        "title": "Stores",
+        "open": "Open",
+        "closed": "Closed"
+    },
+    "orders": {
+        "title": "Orders"
+    },
+    "favorites": {
+        "title": "Favorites"
+    },
+    "requests": {
+        "title": "Requests"
+    },
+    "products": {
+        "title": "Products"
     },
     "errors": {
         "general": "Something weird happened",

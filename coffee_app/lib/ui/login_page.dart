@@ -1,9 +1,8 @@
 import 'package:coffee_app/business/exceptions/not_found_exception.dart';
-import 'package:coffee_app/business/transfer/authenticated.dart';
 import 'package:coffee_app/business/transfer/authentication.dart';
-import 'package:coffee_app/business/user/user_bloc.dart';
+import 'package:coffee_app/business/bloc/user/user_bloc.dart';
 import 'package:coffee_app/main.dart';
-import 'package:coffee_app/ui/home_page.dart';
+import 'package:coffee_app/ui/stores_page.dart';
 import 'package:coffee_app/widgets/error_dialog.dart';
 import 'package:coffee_app/widgets/general_error_dialog.dart';
 import 'package:coffee_app/widgets/title_icon.dart';
@@ -20,20 +19,21 @@ class LoginPageState extends State<LoginPage> {
   GlobalKey<FormState> _formKey;
   Authentication _authentication;
   UserBloc _userBloc;
+  bool _authenticating;
 
   Future<void> _formSubmit() async {
     _formKey.currentState.save();
     if (_formKey.currentState.validate()) {
       try {
-        final result = await _userBloc.authenticate(_authentication);
-        await _userBloc.saveCurrentAuthentication(result);
+        _authenticating = true;
+        final authenticated = await _userBloc.authenticate(_authentication);
+        await _userBloc.saveAuthenticated(authenticated);
         await Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) => HomePage()
+          builder: (context) => StoresPage()
         ));
       } on NotFoundException {
         showDialog(
           context: context,
-          barrierDismissible: true,
           builder: (context) => ErrorDialog(
             errorText: FlutterI18n.translate(context, 'signIn.invalidCredentials'),
             errorDescription: Text(
@@ -44,9 +44,10 @@ class LoginPageState extends State<LoginPage> {
       } catch (e) {
         showDialog(
           context: context,
-          barrierDismissible: true,
           builder: (context) => GeneralErrorDialog(),
         );
+      } finally {
+        _authenticating = false;
       }
     }
   }
@@ -63,6 +64,7 @@ class LoginPageState extends State<LoginPage> {
     _userBloc = coffeeGetIt<UserBloc>();
     _authentication = Authentication();
     _formKey = GlobalKey<FormState>();
+    _authenticating = false;
   }
 
   @override
@@ -129,7 +131,7 @@ class LoginPageState extends State<LoginPage> {
                   FlutterI18n.translate(context, 'signUp.title').toUpperCase(),
                 ),
                 textColor: theme.primaryColor,
-                onPressed: _openSignUp,
+                onPressed: _authenticating ? null : _openSignUp,
               ),
               SizedBox(width: 8),
               RaisedButton(
@@ -137,7 +139,7 @@ class LoginPageState extends State<LoginPage> {
                   FlutterI18n.translate(context, 'signIn.title').toUpperCase(),
                 ),
                 color: theme.primaryColor,
-                onPressed: _formSubmit,
+                onPressed: _authenticating ? null : _formSubmit,
               ),
             ],
           )

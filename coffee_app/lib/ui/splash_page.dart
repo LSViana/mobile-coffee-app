@@ -1,6 +1,6 @@
-import 'package:coffee_app/ui/home_page.dart';
+import 'package:coffee_app/ui/stores_page.dart';
 import 'package:coffee_app/ui/login_page.dart';
-import 'package:coffee_app/business/user/user_bloc.dart';
+import 'package:coffee_app/business/bloc/user/user_bloc.dart';
 import 'package:coffee_app/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
@@ -55,7 +55,7 @@ class _SplashPageState extends State<SplashPage> {
     await Future.delayed(Duration(seconds: 1));
     //
     final isAuthenticated = await _userBloc.isAuthenticated();
-    final nextRoute = isAuthenticated ? HomePage() : LoginPage();
+    final nextRoute = isAuthenticated ? StoresPage() : LoginPage();
     Navigator.of(context).pushReplacement(MaterialPageRoute(
       builder: (context) => nextRoute,
     ));

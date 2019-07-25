@@ -4,7 +4,7 @@ description: A Flutter project to request coffee and more with a fluid and intui
 version: 1.0.0
 
 environment:
-  sdk: ">=2.2.0 <3.0.0"
+  sdk: ">=2.2.2 <3.0.0"
 
 dependencies:
   flutter:
@@ -15,6 +15,8 @@ dependencies:
   flutter_i18n: ^0.6.3
   shared_preferences: ^0.5.3+4
   http_interceptor: ^0.0.3
+  transparent_image: ^1.0.0
+  intl: ^0.15.8
 
 dev_dependencies:
   flutter_test:
