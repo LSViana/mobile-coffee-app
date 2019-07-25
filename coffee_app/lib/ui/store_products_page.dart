@@ -1,7 +1,6 @@
 import 'package:coffee_app/business/bloc/products/product_bloc.dart';
 import 'package:coffee_app/business/model/product.dart';
 import 'package:coffee_app/business/model/store.dart';
-import 'package:coffee_app/business/bloc/store/store_bloc.dart';
 import 'package:coffee_app/main.dart';
 import 'package:coffee_app/widgets/general_error_dialog.dart';
 import 'package:flutter/material.dart';

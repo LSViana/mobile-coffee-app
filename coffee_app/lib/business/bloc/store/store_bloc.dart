@@ -13,6 +13,10 @@ class StoreBloc {
   }
 
   Stream<Iterable<Store>> get all => _all.stream;
+  
+  Future<void> dispose() async {
+    _all.close();
+  }
 
   Future<Iterable<Store>> get() async {
     try {

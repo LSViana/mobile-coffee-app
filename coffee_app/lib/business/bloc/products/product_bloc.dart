@@ -14,6 +14,10 @@ class ProductBloc {
 
   Stream<Iterable<Product>> get byStore => _byStore.stream;
 
+  Future<void> dispose() async {
+    _byStore.close();
+  }
+
   Future<Iterable<Product>> listByStore(String storeId) async {
     try {
       _byStore.sink.add(null);
