@@ -2,7 +2,9 @@
     "actions": {
         "close": "Close",
         "exit": "Exit",
-        "addToCart": "Add to cart"
+        "addToCart": "Add to cart",
+        "checkout": "Checkout",
+        "remove": "Remove"
     },
     "names": {
         "app": "Coffee App"
@@ -32,7 +34,8 @@
         "title": "Requests"
     },
     "products": {
-        "title": "Products"
+        "title": "Products",
+        "added": "Added"
     },
     "errors": {
         "general": "Something weird happened",
