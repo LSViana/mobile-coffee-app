@@ -68,7 +68,7 @@ class _StoreProductsPageState extends State<StoreProductsPage>
                 ],
               ),
             ),
-            floatingActionButton: cart.items.isEmpty
+            floatingActionButton: cart?.items?.isEmpty ?? true
                 ? null
                 : FloatingActionButton.extended(
                     onPressed: _openCheckout,
@@ -83,24 +83,6 @@ class _StoreProductsPageState extends State<StoreProductsPage>
             ),
           );
         });
-  }
-
-  Widget _buildFAB(BuildContext context, AsyncSnapshot<Cart> snapshot) {
-    final theme = Theme.of(context);
-    //
-    if (snapshot.hasData) {
-      final cart = snapshot.data;
-      if (cart.items.isNotEmpty) {
-        return FloatingActionButton.extended(
-          backgroundColor: theme.primaryColor,
-          label: Text(
-              FlutterI18n.translate(context, 'actions.checkout').toUpperCase()),
-          icon: Icon(Icons.shopping_cart),
-          onPressed: () => print('Hello'),
-        );
-      }
-    }
-    return Container();
   }
 
   Widget _buildProducts(ThemeData theme) {
@@ -142,27 +124,35 @@ class _StoreProductsPageState extends State<StoreProductsPage>
                             ),
                           ),
                           Container(
-                            padding: const EdgeInsets.all(16),
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Text(
-                                      product.name,
-                                      style: theme.textTheme.subtitle,
-                                    ),
-                                    Text('${product.price.toStringAsFixed(2)}'),
-                                  ],
+                                SizedBox(height: 16),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Text(
+                                        product.name,
+                                        style: theme.textTheme.subtitle,
+                                      ),
+                                      Text(
+                                          '${product.price.toStringAsFixed(2)}'),
+                                    ],
+                                  ),
                                 ),
                                 SizedBox(height: 8),
-                                Text(
-                                  product.description,
-                                  style: theme.textTheme.caption,
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16),
+                                  child: Text(
+                                    product.description,
+                                    style: theme.textTheme.caption,
+                                  ),
                                 ),
-                                SizedBox(height: 8),
                                 StreamBuilder<Cart>(
                                   stream: _cartBloc.cart,
                                   builder: (context, snapshot) {
@@ -172,7 +162,9 @@ class _StoreProductsPageState extends State<StoreProductsPage>
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: <Widget>[
-                                        Icon(Icons.favorite_border),
+                                        Container(
+                                            child: Icon(Icons.favorite_border),
+                                            padding: const EdgeInsets.all(16).copyWith(top: 0)),
                                         Expanded(
                                           child: AnimatedCrossFade(
                                             firstCurve: Curves.easeInOut,
@@ -185,26 +177,33 @@ class _StoreProductsPageState extends State<StoreProductsPage>
                                                 : CrossFadeState.showSecond,
                                             firstChild: Container(
                                               alignment: Alignment.centerRight,
+                                              padding: const EdgeInsets.all(16).copyWith(top: 0),
                                               child: Row(
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: <Widget>[
-                                                  if(isInCart)
-                                                  ...[
-                                                  Icon(Icons.check),
-                                                  Text(
-                                                      '${FlutterI18n.translate(context, 'products.added')} ${item.amount}'),
+                                                  if (isInCart) ...[
+                                                    Icon(Icons.check),
+                                                    Text(
+                                                        '${FlutterI18n.translate(context, 'products.added')} ${item.amount}'),
                                                   ],
                                                   SizedBox(width: 8),
                                                   RawMaterialButton(
                                                     child: Text(
                                                       '+1',
-                                                      style: TextStyle(color: theme.primaryColor, fontWeight: FontWeight.bold),
+                                                      style: TextStyle(
+                                                          color: theme
+                                                              .primaryColor,
+                                                          fontWeight:
+                                                              FontWeight.bold),
                                                     ),
                                                     shape: CircleBorder(),
-                                                    constraints: BoxConstraints(minWidth: 32),
-                                                    padding: const EdgeInsets.all(8),
+                                                    constraints: BoxConstraints(
+                                                        minWidth: 32),
+                                                    padding:
+                                                        const EdgeInsets.all(8),
                                                     onPressed: () =>
-                                                        _addProductToCart(product),
+                                                        _addProductToCart(
+                                                            product),
                                                   ),
                                                   SizedBox(width: 8),
                                                   FlatButton(
@@ -219,12 +218,14 @@ class _StoreProductsPageState extends State<StoreProductsPage>
                                                     onPressed: () =>
                                                         _removeProductFromCart(
                                                             product),
-                                                  ),
+                                                  )
                                                 ],
                                               ),
                                             ),
                                             secondChild: Container(
                                               alignment: Alignment.centerRight,
+                                              padding:
+                                                  const EdgeInsets.all(16).copyWith(top: 0),
                                               child: RaisedButton(
                                                 child: Text(
                                                   FlutterI18n.translate(context,
