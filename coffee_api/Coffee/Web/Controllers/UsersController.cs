@@ -1,10 +1,7 @@
-﻿using Infrastructure.Features.Users;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Web.Controllers
@@ -22,12 +19,12 @@ namespace Web.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Create([FromBody] Create.Command command)
+        public async Task<IActionResult> Create([FromBody] Infrastructure.Features.Users.Create.Command command)
             => CreatedAtAction(nameof(Read), new { (await mediator.Send(command)).Id }, null);
 
         [HttpGet("{id}")]
         [AllowAnonymous]
         public async Task<IActionResult> Read([FromRoute] Guid id)
-            => Ok(await mediator.Send(new Read.Query { Id = id }));
+            => Ok(await mediator.Send(new Infrastructure.Features.Users.Read.Query { Id = id }));
     }
 }

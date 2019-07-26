@@ -33,6 +33,7 @@ namespace Infrastructure.Features.Users
             public Guid Id { get; set; }
             public string Name { get; set; }
             public string Email { get; set; }
+            public string DeliveryAddress { get; set; }
         }
 
         public class RequestHandler : IRequestHandler<Query, Result>
@@ -58,6 +59,7 @@ namespace Infrastructure.Features.Users
                     Id= user.Id,
                     Name= user.Name,
                     Email= user.Email,
+                    DeliveryAddress = user.DeliveryAddress,
                 };
             }
         }
