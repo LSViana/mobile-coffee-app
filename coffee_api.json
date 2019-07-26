@@ -1,7 +1,7 @@
 {
     "id": "mockoon_export",
     "appVersion": "1.4.0",
-    "checksum": "19d70302f4d874c62b1c48b895f2dec7",
+    "checksum": "3d63997f885fd4b6d105e7ab34035e53",
     "subject": "full",
     "data": [
         {
@@ -24,11 +24,11 @@
                     "sendFileAsBody": false
                 },
                 {
-                    "uuid": "f0b851d0-afdf-11e9-970e-557015a98b84",
+                    "uuid": "accd7a70-aff0-11e9-970e-557015a98b84",
                     "documentation": "",
                     "method": "post",
-                    "endpoint": "authentication/authenticate/jwt",
-                    "body": "{\n    \"id\": \"1\",\n    \"name\": \"Coffee Drinker\",\n    \"token\": \"{token}\"\n}",
+                    "endpoint": "_authentication/authenticate/jwt",
+                    "body": "",
                     "latency": 0,
                     "statusCode": "404",
                     "headers": [],
@@ -74,7 +74,7 @@
                     "documentation": "",
                     "method": "get",
                     "endpoint": "products/bystore/*",
-                    "body": "[\n    {\n        \"id\": \"1\",\n        \"name\": \"Espresso\",\n        \"description\": \"Espresso is coffee of Italian origin, brewed by forcing a small amount of nearly boiling water under pressure through finely ground coffee beans.\",\n        \"imageUrl\": \"https://www.intelligentsiacoffee.com/media/catalog/product/cache/image/700x700/af097278c5db4767b0fe9bb92fe21690/b/c/bc-analog-banner-1.jpg\",\n        \"categoryId\": \"1\",\n        \"price\": 6.0\n    }\n]",
+                    "body": "[\n    {\n        \"id\": \"1\",\n        \"name\": \"Espresso\",\n        \"description\": \"Espresso is coffee of Italian origin, brewed by forcing a small amount of nearly boiling water under pressure through finely ground coffee beans.\",\n        \"imageUrl\": \"https://www.intelligentsiacoffee.com/media/catalog/product/cache/image/700x700/af097278c5db4767b0fe9bb92fe21690/b/c/bc-analog-banner-1.jpg\",\n        \"categoryId\": \"1\",\n        \"priceUnit\": \"R$\",\n        \"price\": 6.0\n    }\n]",
                     "latency": 0,
                     "statusCode": "200",
                     "headers": [

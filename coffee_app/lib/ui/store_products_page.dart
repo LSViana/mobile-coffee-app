@@ -140,7 +140,11 @@ class _StoreProductsPageState extends State<StoreProductsPage>
                                         style: theme.textTheme.subtitle,
                                       ),
                                       Text(
-                                          '${product.price.toStringAsFixed(2)}'),
+                                          '${product.price.toStringAsFixed(2)}',
+                                          style: TextStyle(
+                                            color: theme.primaryColor,
+                                            fontWeight: FontWeight.bold,
+                                          )),
                                     ],
                                   ),
                                 ),
@@ -164,7 +168,8 @@ class _StoreProductsPageState extends State<StoreProductsPage>
                                       children: <Widget>[
                                         Container(
                                             child: Icon(Icons.favorite_border),
-                                            padding: const EdgeInsets.all(16).copyWith(top: 0)),
+                                            padding: const EdgeInsets.all(16)
+                                                .copyWith(top: 0)),
                                         Expanded(
                                           child: AnimatedCrossFade(
                                             firstCurve: Curves.easeInOut,
@@ -177,7 +182,8 @@ class _StoreProductsPageState extends State<StoreProductsPage>
                                                 : CrossFadeState.showSecond,
                                             firstChild: Container(
                                               alignment: Alignment.centerRight,
-                                              padding: const EdgeInsets.all(16).copyWith(top: 0),
+                                              padding: const EdgeInsets.all(16)
+                                                  .copyWith(top: 0),
                                               child: Row(
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: <Widget>[
@@ -224,8 +230,8 @@ class _StoreProductsPageState extends State<StoreProductsPage>
                                             ),
                                             secondChild: Container(
                                               alignment: Alignment.centerRight,
-                                              padding:
-                                                  const EdgeInsets.all(16).copyWith(top: 0),
+                                              padding: const EdgeInsets.all(16)
+                                                  .copyWith(top: 0),
                                               child: RaisedButton(
                                                 child: Text(
                                                   FlutterI18n.translate(context,
