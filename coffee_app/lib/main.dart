@@ -1,5 +1,9 @@
-import 'package:coffee_app/business/user/user_bloc.dart';
-import 'package:coffee_app/business/user/user_repository.dart';
+import 'package:coffee_app/business/bloc/products/product_bloc.dart';
+import 'package:coffee_app/business/bloc/products/product_repository.dart';
+import 'package:coffee_app/business/bloc/store/store_bloc.dart';
+import 'package:coffee_app/business/bloc/store/store_repository.dart';
+import 'package:coffee_app/business/bloc/user/user_bloc.dart';
+import 'package:coffee_app/business/bloc/user/user_repository.dart';
 import 'package:coffee_app/coffee_app.dart';
 import 'package:coffee_app/definitions/http_client.dart';
 import 'package:flutter/material.dart';
@@ -15,12 +19,24 @@ void run(registerEnvironmentServices) {
   // Register services
   registerGeneralServices();
   registerUser();
+  registerStore();
+  registerProduct();
   // Run the application
   runApp(CoffeeApp());
 }
 
 void registerGeneralServices() {
   coffeeGetIt.registerLazySingleton(() => createHttpClient());
+}
+
+void registerStore() {
+  coffeeGetIt.registerLazySingleton(() => StoreRepository());
+  coffeeGetIt.registerLazySingleton(() => StoreBloc());
+}
+
+void registerProduct() {
+  coffeeGetIt.registerLazySingleton(() => ProductRepository());
+  coffeeGetIt.registerLazySingleton(() => ProductBloc());
 }
 
 void registerUser() {
