@@ -39,4 +39,8 @@ class CartBloc {
     cart.items.removeWhere((item) => item.productId == productId);
     _cart.sink.add(cart);
   }
+
+  CartItem getItem(String productId) {
+    return _cart?.value?.items?.firstWhere((item) => item.productId == productId, orElse: () => null);
+  }
 }
