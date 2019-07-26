@@ -6,8 +6,6 @@ namespace Web.Configurations
 {
     public static class ConfigureAuthorizationPolicies
     {
-        private static AuthorizationOptions options;
-
         public static void AddAuthorizationPolicies(this IServiceCollection services)
         {
             services.AddAuthorization(options =>
@@ -15,7 +13,5 @@ namespace Web.Configurations
                 new AuthorizationPolicies().ConfigureAuthorizationPolicies(options);
             });
         }
-
-        
     }
 }
