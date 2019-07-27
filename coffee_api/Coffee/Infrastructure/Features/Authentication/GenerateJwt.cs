@@ -64,7 +64,6 @@ namespace Infrastructure.Features.Authentication
                     Expires = now + tokenLifetime,
                     IssuedAt = now,
                     NotBefore = now,
-                    Subject = await GetClaimsFromPermissions(request.User.Id),
                     SigningCredentials =
                         new SigningCredentials(
                             JwtSecurity.GetSecurityKey(jwtOptions.SecretKey, jwtOptions.SecurityPhrase),
@@ -76,23 +75,6 @@ namespace Infrastructure.Features.Authentication
                     Token = tokenHandler.WriteToken(jwtToken),
                     ExpiresAt = jwtToken.ValidTo,
                 };
-            }
-
-            private async Task<ClaimsIdentity> GetClaimsFromPermissions(Guid id)
-            {
-                var user = await db.Users
-                    // The following includes bring the user roles
-                    //.Include(x => x.Administrator)
-                    .FirstOrDefaultAsync(x => x.Id == id);
-                // The claims to be returned
-                var claims = new List<Claim>();
-                // Verify which claims to addcan
-                //if (user.Administrator != null && !user.Administrator.IsDeleted())
-                //    claims.Add(new Claim(nameof(Administrator), AuthorizationPolicies.True));
-                //
-                claims.Add(new Claim(nameof(User.Id), id.ToString()));
-                // Return result
-                return new ClaimsIdentity(claims);
             }
         }
 
