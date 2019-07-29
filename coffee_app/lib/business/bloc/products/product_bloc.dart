@@ -29,4 +29,9 @@ class ProductBloc {
       return null;
     }
   }
+
+  Future<void> toggleFavorite(String productId) async {
+    await _repository.toggleFavorite(productId);
+    _byStore.sink.add(_byStore.value);
+  }
 }

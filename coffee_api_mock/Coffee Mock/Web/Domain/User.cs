@@ -12,5 +12,6 @@ namespace Web.Domain
         public string Email { get; set; }
         public string Password { get; set; }
         public string DeliveryAddress { get; set; }
+        public virtual ICollection<UserHasFavorite> Favorites { get; set; }
     }
 }
