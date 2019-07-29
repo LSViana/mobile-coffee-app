@@ -31,7 +31,22 @@ class ProductBloc {
   }
 
   Future<void> toggleFavorite(String productId) async {
+    // Updating product changing status
+    _byStore.sink.add(_byStore.value
+      .map((product) {
+        if(product.id == productId)
+          product.changing = true;
+        return product;
+      }));
     await _repository.toggleFavorite(productId);
-    _byStore.sink.add(_byStore.value);
+    // Removing changing status from the given product
+    _byStore.sink.add(_byStore.value
+      .map((product) {
+        if(product.id == productId) {
+          product.favorite = !product.favorite;
+          product.changing = false;
+        }
+        return product;
+      }));
   }
 }

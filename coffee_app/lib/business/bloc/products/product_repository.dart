@@ -6,7 +6,6 @@ import 'package:coffee_app/business/model/product.dart';
 import 'package:coffee_app/definitions/api_settings.dart';
 import 'package:coffee_app/main.dart';
 import 'package:http_interceptor/http_with_interceptor.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ProductRepository {
   ApiSettings _apiSettings;
@@ -29,6 +28,12 @@ class ProductRepository {
   }
 
   Future<void> toggleFavorite(String productId) async {
-    final sharedPreferences = await SharedPreferences.getInstance();
+    final response = await _client.patch('${_apiSettings.base}/products/togglefavorite/$productId');
+    if(response.statusCode == HttpStatus.ok) {
+      // Successfully changed, return result;
+      return;
+    } else {
+      throw HttpException(response.statusCode);
+    }
   }
 }

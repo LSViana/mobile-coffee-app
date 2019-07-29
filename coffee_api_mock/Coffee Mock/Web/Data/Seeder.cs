@@ -14,6 +14,8 @@ namespace Web.Data
         private Category categoryChoco;
         private Category categorySoda;
         private Product productEspresso;
+        private Product productEspressoCinnamon;
+        private Product productLatte;
         private User userCoffeeDrinker;
 
         public Seeder(Db db)
@@ -91,11 +93,25 @@ namespace Web.Data
         {
             var productInStore1 = new ProductInStore
             {
-                Product = db.Products.Local.ElementAt(0),
-                Store = db.Stores.Local.ElementAt(0),
+                Product = productEspresso,
+                Store = storeBioBarista,
+            };
+            var productInStore2 = new ProductInStore
+            {
+                Product = productEspressoCinnamon,
+                Store = storeBioBarista,
+            };
+            var productInStore3 = new ProductInStore
+            {
+                Product = productLatte,
+                Store = storeBioBarista
             };
             // Adding to database context
-            await db.ProductInStores.AddRangeAsync(productInStore1);
+            await db.ProductInStores.AddRangeAsync(
+                productInStore1,
+                productInStore2,
+                productInStore3
+            );
         }
 
         private async Task SeedProducts()
@@ -107,10 +123,32 @@ namespace Web.Data
                 Description = "Espresso is coffee of Italian origin, brewed by forcing a small amount of nearly boiling water under pressure through finely ground coffee beans.",
                 ImageUrl = "http://www.redegeek.com.br/wp-content/uploads/2015/04/espresso.jpg",
                 Price = 6m,
-                Category = db.Categories.Local.ElementAt(0),
+                Category = categoryCoffee,
+            };
+            productEspressoCinnamon = new Product
+            {
+                Id = Guid.Parse("{23078e32-572f-4e96-b36b-c0771398ff98}"),
+                Name = "Espresso Cinnamon",
+                Description = "Espresso mixed with powdered sugar, cinnamon and nutmeg.",
+                ImageUrl = "http://cdn.comercialelmar.com.br/produtos/prd_2364/foto.jpg",
+                Price = 7m,
+                Category = categoryCoffee,
+            };
+            productLatte = new Product
+            {
+                Id = Guid.Parse("{5a28bd63-28bc-4a4d-adba-0f4d4c5a38fa}"),
+                Name = "Latte",
+                Description = "A latte (/ˈlɑːteɪ/ or /ˈlæteɪ/) is a coffee drink made with espresso and steamed milk.",
+                ImageUrl = "https://www.nespresso.com/ncp/res/uploads/recipes/nespresso-recipes-Caff%C3%A8-Latte-by-Nespresso.jpg",
+                Price = 5m,
+                Category = categoryCoffee,
             };
             // Adding to database context
-            await db.Products.AddRangeAsync(productEspresso);
+            await db.Products.AddRangeAsync(
+                productEspresso,
+                productEspressoCinnamon,
+                productLatte
+            );
         }
 
         private async Task SeedStores()

@@ -26,31 +26,57 @@ namespace Web.Controllers
         public async Task<IActionResult> ListByStore([FromRoute] Guid storeId)
         {
             var user = await this.GetUserAuthenticated(db);
-            var products = await db.Products
+            var userId = user?.Id ?? Guid.Empty;
+            var products = db.Products
                 .Where(x => x.Stores.Any(y => y.StoreId == storeId))
-                .ToArrayAsync();
-            return Ok(products.Select(x => new
-            {
-                x.Id,
-                x.Name,
-                x.ImageUrl,
-                x.Description,
-                x.CategoryId,
-                x.Price,
-                Favorite = user == null ? false : x.Users.Any(y => y.UserId == user.Id),
-                PriceUnit = "R$",
-            }));
+                .Select(x => new
+                {
+                    x.Id,
+                    x.Name,
+                    x.ImageUrl,
+                    x.Description,
+                    x.CategoryId,
+                    x.Price,
+                    Favorite = x.Users.Any(y => y.UserId == userId),
+                    PriceUnit = "R$",
+                });
+            return Ok(products);
         }
 
         [Authorize]
+        [HttpPatch("togglefavorite/{id}")]
         public async Task<IActionResult> SetFavorite([FromRoute] Guid id)
         {
             var user = await this.GetUserAuthenticated(db);
-            if(user is null)
+            if (user is null)
             {
                 return Unauthorized();
             }
             // Set favorite value
+            var product = await db.Products
+                .Include(x => x.Users)
+                .FirstOrDefaultAsync(x => x.Id == id);
+            if (product is null)
+                return NotFound();
+            var userFavorite = product.Users?.FirstOrDefault(x => x.UserId == user.Id);
+            if (userFavorite is null)
+            {
+                // Add as favorite if it's not yet
+                userFavorite = new Domain.UserHasFavorite
+                {
+                    Product = product,
+                    User = user
+                };
+                await db.UserHasFavorites.AddAsync(userFavorite);
+            }
+            else
+            {
+                // Remove from favorites if it's there
+                db.UserHasFavorites.Remove(userFavorite);
+            }
+            // Save changes to database
+            await db.SaveChangesAsync();
+            return Ok();
         }
     }
 }

@@ -79,13 +79,13 @@ class _StoreProductsPageState extends State<StoreProductsPage>
                     backgroundColor: theme.primaryColor,
                   ),
             body: Container(
-              child: _buildProducts(theme),
+              child: _buildProducts(theme, cart),
             ),
           );
         });
   }
 
-  Widget _buildProducts(ThemeData theme) {
+  Widget _buildProducts(ThemeData theme, Cart cart) {
     final theme = Theme.of(context);
     //
     return StreamBuilder<Iterable<Product>>(
@@ -104,15 +104,17 @@ class _StoreProductsPageState extends State<StoreProductsPage>
               ...widget.store.categories.map((c) {
                 final categoryProducts =
                     byStore.where((p) => p.categoryId == c.id);
+                final defaultMargin = const EdgeInsets.only(bottom: 8);
                 // TODO Handle the case of categories with no products
                 return ListView.builder(
                   itemCount: categoryProducts.length,
+                  padding: const EdgeInsets.all(8),
                   itemBuilder: (context, index) {
                     final product = categoryProducts.elementAt(index);
                     return Card(
                       key: Key(product.id),
                       clipBehavior: Clip.hardEdge,
-                      margin: const EdgeInsets.all(12),
+                      margin: index == categoryProducts.length - 1 && (cart?.items?.isNotEmpty ?? false) ? defaultMargin.copyWith(bottom: 64) : defaultMargin,
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
@@ -127,6 +129,8 @@ class _StoreProductsPageState extends State<StoreProductsPage>
                           Container(
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment:
+                                  CrossAxisAlignment.stretch,
                               children: <Widget>[
                                 SizedBox(height: 16),
                                 Container(
@@ -171,7 +175,8 @@ class _StoreProductsPageState extends State<StoreProductsPage>
                                 StreamBuilder<Cart>(
                                   stream: _cartBloc.cart,
                                   builder: (context, snapshot) {
-                                    final item = _cartBloc.getItem(product.id);
+                                    final item =
+                                        _cartBloc.getItem(product.id);
                                     final isInCart = item != null;
                                     return Row(
                                       mainAxisAlignment:
@@ -179,12 +184,21 @@ class _StoreProductsPageState extends State<StoreProductsPage>
                                       children: <Widget>[
                                         Container(
                                             child: IconButton(
-                                              icon: Icon(Icons.favorite_border),
-                                              onPressed: () => _productBloc
-                                                  .toggleFavorite(product.id),
+                                              icon: Icon(product.favorite
+                                                  ? Icons.favorite
+                                                  : Icons.favorite_border),
+                                              color: product.favorite
+                                                  ? Colors.red
+                                                  : null,
+                                              onPressed: product.changing
+                                                  ? null
+                                                  : () => _productBloc
+                                                      .toggleFavorite(
+                                                          product.id),
                                             ),
-                                            padding: const EdgeInsets.all(16)
-                                                .copyWith(top: 0)),
+                                            padding:
+                                                const EdgeInsets.all(16)
+                                                    .copyWith(top: 0)),
                                         Expanded(
                                           child: AnimatedCrossFade(
                                             firstCurve: Curves.easeInOut,
@@ -196,11 +210,14 @@ class _StoreProductsPageState extends State<StoreProductsPage>
                                                 ? CrossFadeState.showFirst
                                                 : CrossFadeState.showSecond,
                                             firstChild: Container(
-                                              alignment: Alignment.centerRight,
-                                              padding: const EdgeInsets.all(16)
-                                                  .copyWith(top: 0),
+                                              alignment:
+                                                  Alignment.centerRight,
+                                              padding:
+                                                  const EdgeInsets.all(16)
+                                                      .copyWith(top: 0),
                                               child: Row(
-                                                mainAxisSize: MainAxisSize.min,
+                                                mainAxisSize:
+                                                    MainAxisSize.min,
                                                 children: <Widget>[
                                                   if (isInCart) ...[
                                                     Icon(Icons.check),
@@ -215,13 +232,16 @@ class _StoreProductsPageState extends State<StoreProductsPage>
                                                           color: theme
                                                               .primaryColor,
                                                           fontWeight:
-                                                              FontWeight.bold),
+                                                              FontWeight
+                                                                  .bold),
                                                     ),
                                                     shape: CircleBorder(),
-                                                    constraints: BoxConstraints(
-                                                        minWidth: 32),
+                                                    constraints:
+                                                        BoxConstraints(
+                                                            minWidth: 32),
                                                     padding:
-                                                        const EdgeInsets.all(8),
+                                                        const EdgeInsets
+                                                            .all(8),
                                                     onPressed: () =>
                                                         _addProductToCart(
                                                             product),
@@ -244,18 +264,22 @@ class _StoreProductsPageState extends State<StoreProductsPage>
                                               ),
                                             ),
                                             secondChild: Container(
-                                              alignment: Alignment.centerRight,
-                                              padding: const EdgeInsets.all(16)
-                                                  .copyWith(top: 0),
+                                              alignment:
+                                                  Alignment.centerRight,
+                                              padding:
+                                                  const EdgeInsets.all(16)
+                                                      .copyWith(top: 0),
                                               child: RaisedButton(
                                                 child: Text(
-                                                  FlutterI18n.translate(context,
+                                                  FlutterI18n.translate(
+                                                          context,
                                                           'actions.addToCart')
                                                       .toUpperCase(),
                                                 ),
                                                 color: theme.primaryColor,
                                                 onPressed: () =>
-                                                    _addProductToCart(product),
+                                                    _addProductToCart(
+                                                        product),
                                               ),
                                             ),
                                           ),
@@ -272,7 +296,7 @@ class _StoreProductsPageState extends State<StoreProductsPage>
                     );
                   },
                 );
-              }),
+              })
             ],
           );
         }
