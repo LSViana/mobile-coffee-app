@@ -37,8 +37,11 @@ class _CartPageState extends State<CartPage> {
     _cartBloc = coffeeGetIt<CartBloc>();
     _productBloc = coffeeGetIt<ProductBloc>();
     _userBloc = coffeeGetIt<UserBloc>();
-    _deliveryAddressController = TextEditingController(text: _cartBloc.getCurrentDeliveryAddress(orElse: _userBloc.getCurrentDeliveryAddress()));
-    _cartEmpty = false; // Assume it is false because this screen isn't not reachable with the cart empty
+    _deliveryAddressController = TextEditingController(
+        text: _cartBloc.getCurrentDeliveryAddress(
+            orElse: _userBloc.getCurrentDeliveryAddress()));
+    _cartEmpty =
+        false; // Assume it is false because this screen isn't not reachable with the cart empty
     _startEventHandlers();
   }
 
@@ -56,12 +59,15 @@ class _CartPageState extends State<CartPage> {
       appBar: AppBar(
         title: Text(FlutterI18n.translate(context, 'cart.title')),
       ),
-      floatingActionButton: _cartEmpty ? null : FloatingActionButton.extended(
-        icon: Icon(Icons.send),
-        label: Text(FlutterI18n.translate(context, 'actions.send').toUpperCase()),
-        onPressed: _sendRequest,
-        backgroundColor: theme.primaryColor,
-      ),
+      floatingActionButton: _cartEmpty
+          ? null
+          : FloatingActionButton.extended(
+              icon: Icon(Icons.send),
+              label: Text(
+                  FlutterI18n.translate(context, 'actions.send').toUpperCase()),
+              onPressed: _sendRequest,
+              backgroundColor: theme.primaryColor,
+            ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: <Widget>[
