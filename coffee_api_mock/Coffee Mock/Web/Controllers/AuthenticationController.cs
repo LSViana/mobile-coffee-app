@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -42,10 +41,6 @@ namespace Web.Controllers
                     Expires = now + tokenLifetime,
                     IssuedAt = now,
                     NotBefore = now,
-                    Subject = new ClaimsIdentity(new Claim[]
-                    {
-                        new Claim(nameof(Domain.User.Id), user.Id.ToString()),
-                    }),
                     SigningCredentials =
                         new SigningCredentials(
                             new SymmetricSecurityKey(new HMACSHA256(Encoding.UTF8.GetBytes("secret-key")).ComputeHash(Encoding.UTF8.GetBytes("token-key"))),

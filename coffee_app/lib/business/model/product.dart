@@ -4,8 +4,6 @@ class Product {
   String description;
   String imageUrl;
   double price;
-  String priceUnit;
-  bool favorite;
   String categoryId;
 
   Product(
@@ -14,8 +12,6 @@ class Product {
       this.description,
       this.imageUrl,
       this.price,
-      this.priceUnit,
-      this.favorite,
       this.categoryId});
 
   Product.fromJson(Map<String, dynamic> json) {
@@ -25,8 +21,6 @@ class Product {
     description = json["description"];
     imageUrl = json["imageUrl"];
     price = json["price"].toDouble();
-    priceUnit = json["priceUnit"];
-    favorite = json["favorite"];
     categoryId = json["categoryId"];
   }
 
@@ -37,8 +31,6 @@ class Product {
       "description": description,
       "imageUrl": imageUrl,
       "price": price,
-      "priceUnit": priceUnit,
-      "favorite": favorite,
       "categoryId": categoryId,
     };
   }
