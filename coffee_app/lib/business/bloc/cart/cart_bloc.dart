@@ -98,4 +98,8 @@ class CartBloc {
       _cart.sink.add(cart);
     }
   }
+
+  bool isEmpty() {
+    return _cart?.value?.items?.isEmpty ?? true;
+  }
 }

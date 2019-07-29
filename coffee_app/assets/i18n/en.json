@@ -5,7 +5,8 @@
         "addToCart": "Add to cart",
         "checkout": "Checkout",
         "remove": "Remove",
-        "schedule": "Schedule"
+        "schedule": "Schedule",
+        "send": "Send"
     },
     "names": {
         "app": "Coffee App",

@@ -17,22 +17,28 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
-  StoreBloc _storeBloc;
+  TextEditingController _deliveryAddressController;
+  //
   CartBloc _cartBloc;
   ProductBloc _productBloc;
   UserBloc _userBloc;
   //
-  TextEditingController _deliveryAddressController;
+  bool _cartEmpty;
+
+  Future<void> _sendRequest() async {
+    // TODO Send request
+    print('Send request');
+  }
 
   @override
   void initState() {
     super.initState();
     //
-    _storeBloc = coffeeGetIt<StoreBloc>();
     _cartBloc = coffeeGetIt<CartBloc>();
     _productBloc = coffeeGetIt<ProductBloc>();
     _userBloc = coffeeGetIt<UserBloc>();
     _deliveryAddressController = TextEditingController(text: _cartBloc.getCurrentDeliveryAddress(orElse: _userBloc.getCurrentDeliveryAddress()));
+    _cartEmpty = false; // Assume it is false because this screen isn't not reachable with the cart empty
     _startEventHandlers();
   }
 
@@ -49,6 +55,12 @@ class _CartPageState extends State<CartPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(FlutterI18n.translate(context, 'cart.title')),
+      ),
+      floatingActionButton: _cartEmpty ? null : FloatingActionButton.extended(
+        icon: Icon(Icons.send),
+        label: Text(FlutterI18n.translate(context, 'actions.send').toUpperCase()),
+        onPressed: _sendRequest,
+        backgroundColor: theme.primaryColor,
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
@@ -256,8 +268,12 @@ class _CartPageState extends State<CartPage> {
                                     SizedBox(width: 8),
                                     IconButton(
                                       icon: Icon(Icons.cancel),
-                                      onPressed: () =>
-                                          _cartBloc.removeProduct(product.id),
+                                      onPressed: () {
+                                        _cartBloc.removeProduct(product.id);
+                                        setState(() {
+                                          _cartEmpty = _cartBloc.isEmpty();
+                                        });
+                                      },
                                     ),
                                   ],
                                 ),
@@ -309,6 +325,7 @@ class _CartPageState extends State<CartPage> {
                                             '${product.priceUnit}',
                                             style: theme.textTheme.caption,
                                           ),
+                                          SizedBox(width: 4),
                                           Text(
                                               '${(item.amount * product.price).toStringAsFixed(2)}',
                                               style: theme.textTheme.title
@@ -334,6 +351,7 @@ class _CartPageState extends State<CartPage> {
             return SizedBox.shrink();
           },
         ),
+        SizedBox(height: 56),
       ],
     );
   }
