@@ -35,6 +35,7 @@ class _StoreProductsPageState extends State<StoreProductsPage>
   Future<void> _openCheckout() async {
     await Navigator.of(context).push(MaterialPageRoute(
       builder: (context) => CartPage(),
+      maintainState: false
     ));
   }
 
@@ -43,6 +44,7 @@ class _StoreProductsPageState extends State<StoreProductsPage>
     super.initState();
     //
     _cartBloc = coffeeGetIt<CartBloc>();
+    _cartBloc.restoreToStore(widget.store.id);
     _productBloc = coffeeGetIt<ProductBloc>();
     _productBloc.listByStore(widget.store.id);
     _tabController = TabController(
@@ -54,11 +56,11 @@ class _StoreProductsPageState extends State<StoreProductsPage>
 
   @override
   Widget build(BuildContext context) {
+    // TODO Refactor screen into smaller widgets
     final theme = Theme.of(context);
     return StreamBuilder<Cart>(
         stream: _cartBloc.cart,
         builder: (context, snapshot) {
-          print('Building cart in $StoreProductsPage');
           final cart = snapshot.data;
           //
           return Scaffold(

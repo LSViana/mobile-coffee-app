@@ -4,10 +4,12 @@
         "exit": "Exit",
         "addToCart": "Add to cart",
         "checkout": "Checkout",
-        "remove": "Remove"
+        "remove": "Remove",
+        "schedule": "Schedule"
     },
     "names": {
-        "app": "Coffee App"
+        "app": "Coffee App",
+        "now": "Now"
     },
     "signIn": {
         "title": "Sign In",
@@ -38,7 +40,11 @@
         "added": "Added"
     },
     "cart": {
-        "title": "Cart"
+        "title": "Cart",
+        "total": "Total",
+        "deliveryAddress": "Delivery Address",
+        "scheduleDelivery": "Schedule Delivery",
+        "items": "Items"
     },
     "errors": {
         "general": "Something weird happened",

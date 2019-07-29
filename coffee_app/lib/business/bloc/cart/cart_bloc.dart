@@ -1,6 +1,6 @@
 import 'package:coffee_app/business/model/cart.dart';
+import 'package:coffee_app/business/model/cart_delivery.dart';
 import 'package:coffee_app/business/model/cart_item.dart';
-import 'package:coffee_app/business/model/product.dart';
 import 'package:rxdart/rxdart.dart';
 
 class CartBloc {
@@ -8,7 +8,7 @@ class CartBloc {
 
   CartBloc() {
     _cart = BehaviorSubject<Cart>();
-    _cart.sink.add(Cart(items: []));
+    _cart.sink.add(Cart(items: [], storeId: null));
   }
 
   Stream<Cart> get cart => _cart.stream;
@@ -41,6 +41,29 @@ class CartBloc {
   }
 
   CartItem getItem(String productId) {
-    return _cart?.value?.items?.firstWhere((item) => item.productId == productId, orElse: () => null);
+    return _cart?.value?.items
+        ?.firstWhere((item) => item.productId == productId, orElse: () => null);
+  }
+
+  void restoreToStore(String id) {
+    if (_cart.value.storeId != id) {
+      _cart.sink.add(Cart(
+        items: [],
+        storeId: id,
+      ));
+    }
+  }
+
+  void setScheduleDelivery(CartDelivery value) {
+    if (_cart.hasValue) {
+      final cart = _cart.value;
+      if (value == CartDelivery.now) {
+        cart.deliveryDate = null;
+      } else if (value == CartDelivery.schedule) {
+        cart.deliveryDate = DateTime.now();
+      }
+      // Updating cart
+      _cart.sink.add(cart);
+    }
   }
 }

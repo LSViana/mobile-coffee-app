@@ -1,0 +1,4 @@
+enum CartDelivery {
+  now,
+  schedule
+}

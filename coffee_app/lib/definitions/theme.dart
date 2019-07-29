@@ -7,5 +7,6 @@ ThemeData getCoffeeTheme() {
     splashColor: Color(0xFFFFE1BF),
     focusColor: Colors.red,
     highlightColor: Color(0xFFFFE1BF),
+    unselectedWidgetColor: Colors.black,
   );
 }
