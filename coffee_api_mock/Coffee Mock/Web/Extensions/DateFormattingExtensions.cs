@@ -1,10 +1,9 @@
 ﻿using System;
 namespace Web.Extensions
 {
-    public class DateFormatting
+    public static class DateFormattingExtensions
     {
-        public DateFormatting()
-        {
-        }
+        public static string WriteHms(this TimeSpan @this)
+            => $"{@this.TotalHours}:{@this.Minutes}:{@this.Seconds}";
     }
 }

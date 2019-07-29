@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Web.Data;
+using Web.Extensions;
 
 namespace Web.Controllers
 {
@@ -29,8 +30,8 @@ namespace Web.Controllers
                 x.Id,
                 x.Name,
                 x.ImageUrl,
-                x.OpeningTime,
-                x.ClosingTime,
+                OpeningTime = x.OpeningTime.WriteHms(),
+                ClosingTime = x.ClosingTime.WriteHms(),
                 x.WorkingDays,
                 Open = x.OpeningTime <= timeOfDay && x.ClosingTime >= timeOfDay,
                 Categories = x.Categories.Select(y => new

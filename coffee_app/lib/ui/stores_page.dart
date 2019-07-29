@@ -63,7 +63,9 @@ class _StoresPageState extends State<StoresPage> {
             title: Text(store.name),
             subtitle: _buildStoreSubtitle(store.open),
             leading: Container(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(4),
+              width: 54,
+              height: 54,
               child: Material(
                 elevation: 2,
                 shape: CircleBorder(),
@@ -71,6 +73,7 @@ class _StoresPageState extends State<StoresPage> {
                 child: FadeInImage.memoryNetwork(
                   placeholder: kTransparentImage,
                   image: store.imageUrl,
+                  fit: BoxFit.contain,
                   fadeInDuration: Duration(milliseconds: 300),
                 ),
               ),

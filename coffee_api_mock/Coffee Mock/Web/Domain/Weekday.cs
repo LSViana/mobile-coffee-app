@@ -21,5 +21,6 @@ namespace Web.Domain
     {
         public const WeekDay WeekDays = WeekDay.Monday | WeekDay.Tuesday | WeekDay.Wednesday | WeekDay.Thursday | WeekDay.Friday;
         public const WeekDay WeekendDays = WeekDay.Saturday | WeekDay.Sunday;
+        public const WeekDay AllDays = WeekDays | WeekendDays;
     }
 }

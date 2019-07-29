@@ -37,6 +37,9 @@
         "title": "Products",
         "added": "Added"
     },
+    "cart": {
+        "title": "Cart"
+    },
     "errors": {
         "general": "Something weird happened",
         "generalDescription": "We captured this error and we know it's happened, we're sorry for the trouble...",

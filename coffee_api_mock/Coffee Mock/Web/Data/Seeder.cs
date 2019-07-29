@@ -10,6 +10,7 @@ namespace Web.Data
     {
         private readonly Db db;
         private Store storeBioBarista;
+        private Store storeStarbucks;
         private Category categoryCoffee;
         private Category categoryChoco;
         private Category categorySoda;
@@ -64,8 +65,18 @@ namespace Web.Data
                 Store = storeBioBarista,
                 Category = categorySoda,
             };
+            var storeHasCategory4 = new StoreHasCategory
+            {
+                Store = storeStarbucks,
+                Category = categoryCoffee,
+            };
             // Adding to database context
-            await db.StoreHasCategories.AddRangeAsync(storeHasCategory1, storeHasCategory2, storeHasCategory3);
+            await db.StoreHasCategories.AddRangeAsync(
+                storeHasCategory1,
+                storeHasCategory2,
+                storeHasCategory3,
+                storeHasCategory4
+            );
         }
 
         private async Task SeedCategories()
@@ -106,11 +117,17 @@ namespace Web.Data
                 Product = productLatte,
                 Store = storeBioBarista
             };
+            var productInStore4 = new ProductInStore
+            {
+                Product = productEspresso,
+                Store = storeStarbucks,
+            };
             // Adding to database context
             await db.ProductInStores.AddRangeAsync(
                 productInStore1,
                 productInStore2,
-                productInStore3
+                productInStore3,
+                productInStore4
             );
         }
 
@@ -162,8 +179,20 @@ namespace Web.Data
                 ImageUrl = "https://i.vimeocdn.com/portrait/5308569_300x300",
                 WorkingDays = WeekDayCombinations.WeekDays,
             };
+            storeStarbucks = new Store
+            {
+                Id = Guid.Parse("{219bb0d7-6218-483d-8569-ecf80526a2c2}"),
+                Name = "Starbucks",
+                OpeningTime = TimeSpan.FromHours(6),
+                ClosingTime = TimeSpan.FromHours(24),
+                ImageUrl = "https://pbs.twimg.com/profile_images/3001407674/8687b5c6bf5880755435f2717b500db0.jpeg",
+                WorkingDays = WeekDayCombinations.AllDays,
+            };
             // Adding to database context
-            await db.Stores.AddRangeAsync(storeBioBarista);
+            await db.Stores.AddRangeAsync(
+                storeBioBarista,
+                storeStarbucks
+            );
         }
 
         private async Task SeedUsers()

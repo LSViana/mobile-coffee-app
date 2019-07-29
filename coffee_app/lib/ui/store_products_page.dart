@@ -4,6 +4,7 @@ import 'package:coffee_app/business/model/cart.dart';
 import 'package:coffee_app/business/model/product.dart';
 import 'package:coffee_app/business/model/store.dart';
 import 'package:coffee_app/main.dart';
+import 'package:coffee_app/ui/cart_page.dart';
 import 'package:coffee_app/widgets/general_error_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
@@ -32,7 +33,9 @@ class _StoreProductsPageState extends State<StoreProductsPage>
   }
 
   Future<void> _openCheckout() async {
-    print('Open checkout');
+    await Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => CartPage(),
+    ));
   }
 
   @override
@@ -55,6 +58,7 @@ class _StoreProductsPageState extends State<StoreProductsPage>
     return StreamBuilder<Cart>(
         stream: _cartBloc.cart,
         builder: (context, snapshot) {
+          print('Building cart in $StoreProductsPage');
           final cart = snapshot.data;
           //
           return Scaffold(
@@ -114,7 +118,10 @@ class _StoreProductsPageState extends State<StoreProductsPage>
                     return Card(
                       key: Key(product.id),
                       clipBehavior: Clip.hardEdge,
-                      margin: index == categoryProducts.length - 1 && (cart?.items?.isNotEmpty ?? false) ? defaultMargin.copyWith(bottom: 64) : defaultMargin,
+                      margin: index == categoryProducts.length - 1 &&
+                              (cart?.items?.isNotEmpty ?? false)
+                          ? defaultMargin.copyWith(bottom: 72)
+                          : defaultMargin,
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
@@ -129,8 +136,7 @@ class _StoreProductsPageState extends State<StoreProductsPage>
                           Container(
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment:
-                                  CrossAxisAlignment.stretch,
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: <Widget>[
                                 SizedBox(height: 16),
                                 Container(
@@ -175,8 +181,7 @@ class _StoreProductsPageState extends State<StoreProductsPage>
                                 StreamBuilder<Cart>(
                                   stream: _cartBloc.cart,
                                   builder: (context, snapshot) {
-                                    final item =
-                                        _cartBloc.getItem(product.id);
+                                    final item = _cartBloc.getItem(product.id);
                                     final isInCart = item != null;
                                     return Row(
                                       mainAxisAlignment:
@@ -196,9 +201,8 @@ class _StoreProductsPageState extends State<StoreProductsPage>
                                                       .toggleFavorite(
                                                           product.id),
                                             ),
-                                            padding:
-                                                const EdgeInsets.all(16)
-                                                    .copyWith(top: 0)),
+                                            padding: const EdgeInsets.all(16)
+                                                .copyWith(top: 0)),
                                         Expanded(
                                           child: AnimatedCrossFade(
                                             firstCurve: Curves.easeInOut,
@@ -210,14 +214,11 @@ class _StoreProductsPageState extends State<StoreProductsPage>
                                                 ? CrossFadeState.showFirst
                                                 : CrossFadeState.showSecond,
                                             firstChild: Container(
-                                              alignment:
-                                                  Alignment.centerRight,
-                                              padding:
-                                                  const EdgeInsets.all(16)
-                                                      .copyWith(top: 0),
+                                              alignment: Alignment.centerRight,
+                                              padding: const EdgeInsets.all(16)
+                                                  .copyWith(top: 0),
                                               child: Row(
-                                                mainAxisSize:
-                                                    MainAxisSize.min,
+                                                mainAxisSize: MainAxisSize.min,
                                                 children: <Widget>[
                                                   if (isInCart) ...[
                                                     Icon(Icons.check),
@@ -232,16 +233,13 @@ class _StoreProductsPageState extends State<StoreProductsPage>
                                                           color: theme
                                                               .primaryColor,
                                                           fontWeight:
-                                                              FontWeight
-                                                                  .bold),
+                                                              FontWeight.bold),
                                                     ),
                                                     shape: CircleBorder(),
-                                                    constraints:
-                                                        BoxConstraints(
-                                                            minWidth: 32),
+                                                    constraints: BoxConstraints(
+                                                        minWidth: 32),
                                                     padding:
-                                                        const EdgeInsets
-                                                            .all(8),
+                                                        const EdgeInsets.all(8),
                                                     onPressed: () =>
                                                         _addProductToCart(
                                                             product),
@@ -264,22 +262,18 @@ class _StoreProductsPageState extends State<StoreProductsPage>
                                               ),
                                             ),
                                             secondChild: Container(
-                                              alignment:
-                                                  Alignment.centerRight,
-                                              padding:
-                                                  const EdgeInsets.all(16)
-                                                      .copyWith(top: 0),
+                                              alignment: Alignment.centerRight,
+                                              padding: const EdgeInsets.all(16)
+                                                  .copyWith(top: 0),
                                               child: RaisedButton(
                                                 child: Text(
-                                                  FlutterI18n.translate(
-                                                          context,
+                                                  FlutterI18n.translate(context,
                                                           'actions.addToCart')
                                                       .toUpperCase(),
                                                 ),
                                                 color: theme.primaryColor,
                                                 onPressed: () =>
-                                                    _addProductToCart(
-                                                        product),
+                                                    _addProductToCart(product),
                                               ),
                                             ),
                                           ),
