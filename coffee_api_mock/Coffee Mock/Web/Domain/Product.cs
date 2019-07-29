@@ -15,5 +15,6 @@ namespace Web.Domain
         public Guid CategoryId { get; set; }
         public virtual Category Category { get; set; }
         public virtual ICollection<ProductInStore> Stores { get; set; }
+        public virtual ICollection<UserHasFavorite> Users { get; set; }
     }
 }

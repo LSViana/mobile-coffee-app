@@ -17,6 +17,7 @@ namespace Web.Data
         public DbSet<Product> Products { get; set; }
         public DbSet<Store> Stores { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<UserHasFavorite> UserHasFavorites { get; set; }
         public DbSet<ProductInStore> ProductInStores { get; set; }
         public DbSet<StoreHasCategory> StoreHasCategories { get; set; }
 
@@ -27,7 +28,7 @@ namespace Web.Data
                 .HasKey(x => new
                 {
                     x.CategoryId,
-                    x.StoreId
+                    x.StoreId,
                 });
             #endregion
             #region ProductInStore
@@ -36,6 +37,14 @@ namespace Web.Data
                 {
                     x.ProductId,
                     x.StoreId,
+                });
+            #endregion
+            #region UserHasFavorite
+            modelBuilder.Entity<UserHasFavorite>()
+                .HasKey(x => new
+                {
+                    x.UserId,
+                    x.ProductId,
                 });
             #endregion
         }

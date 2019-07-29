@@ -13,6 +13,8 @@ namespace Web.Data
         private Category categoryCoffee;
         private Category categoryChoco;
         private Category categorySoda;
+        private Product productEspresso;
+        private User userCoffeeDrinker;
 
         public Seeder(Db db)
         {
@@ -27,8 +29,20 @@ namespace Web.Data
             await SeedProducts();
             await SeedProductInStores();
             await SeedStoreHasCategories();
+            await SeedUserHasFavorite();
             // Commit changes
             await db.SaveChangesAsync();
+        }
+
+        private async Task SeedUserHasFavorite()
+        {
+            var userHasFavorite1 = new UserHasFavorite
+            {
+                User = userCoffeeDrinker,
+                Product = productEspresso,
+            };
+            // Adding to database context
+            await db.UserHasFavorites.AddRangeAsync(userHasFavorite1);
         }
 
         private async Task SeedStoreHasCategories()
@@ -86,7 +100,7 @@ namespace Web.Data
 
         private async Task SeedProducts()
         {
-            var product1 = new Product
+            productEspresso = new Product
             {
                 Id = Guid.Parse("{2D3885EA-8E16-41C2-BF5D-4A76D8CF52A1}"),
                 Name = "Espresso",
@@ -96,7 +110,7 @@ namespace Web.Data
                 Category = db.Categories.Local.ElementAt(0),
             };
             // Adding to database context
-            await db.Products.AddRangeAsync(product1);
+            await db.Products.AddRangeAsync(productEspresso);
         }
 
         private async Task SeedStores()
@@ -117,7 +131,7 @@ namespace Web.Data
         private async Task SeedUsers()
         {
             var standardPassword = "Asdf1234";
-            var user1 = new User
+            userCoffeeDrinker = new User
             {
                 Id = Guid.Parse("{C2D94925-9587-4132-8E63-B69D80315FC3}"),
                 Email = "coffee.drinker@email.com",
@@ -126,7 +140,7 @@ namespace Web.Data
                 Password = standardPassword,
             };
             // Adding to database context
-            await db.Users.AddRangeAsync(user1);
+            await db.Users.AddRangeAsync(userCoffeeDrinker);
         }
 
     }

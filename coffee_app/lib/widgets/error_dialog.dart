@@ -29,7 +29,7 @@ class ErrorDialog extends StatelessWidget {
           child: Text(
             FlutterI18n.translate(context, 'actions.close').toUpperCase(),
           ),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => Navigator.of(context).maybePop(),
         )
       ],
     );

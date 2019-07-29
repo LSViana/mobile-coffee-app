@@ -110,6 +110,7 @@ class _StoreProductsPageState extends State<StoreProductsPage>
                   itemBuilder: (context, index) {
                     final product = categoryProducts.elementAt(index);
                     return Card(
+                      key: Key(product.id),
                       clipBehavior: Clip.hardEdge,
                       margin: const EdgeInsets.all(12),
                       child: Column(
@@ -139,12 +140,22 @@ class _StoreProductsPageState extends State<StoreProductsPage>
                                         product.name,
                                         style: theme.textTheme.subtitle,
                                       ),
-                                      Text(
-                                          '${product.price.toStringAsFixed(2)}',
-                                          style: TextStyle(
-                                            color: theme.primaryColor,
-                                            fontWeight: FontWeight.bold,
-                                          )),
+                                      Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: <Widget>[
+                                          Text(
+                                            '${product.priceUnit}',
+                                            style: theme.textTheme.caption,
+                                          ),
+                                          SizedBox(width: 4),
+                                          Text(
+                                              '${product.price.toStringAsFixed(2)}',
+                                              style: TextStyle(
+                                                color: theme.primaryColor,
+                                                fontWeight: FontWeight.bold,
+                                              )),
+                                        ],
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -167,7 +178,11 @@ class _StoreProductsPageState extends State<StoreProductsPage>
                                           MainAxisAlignment.spaceBetween,
                                       children: <Widget>[
                                         Container(
-                                            child: Icon(Icons.favorite_border),
+                                            child: IconButton(
+                                              icon: Icon(Icons.favorite_border),
+                                              onPressed: () => _productBloc
+                                                  .toggleFavorite(product.id),
+                                            ),
                                             padding: const EdgeInsets.all(16)
                                                 .copyWith(top: 0)),
                                         Expanded(
@@ -190,7 +205,7 @@ class _StoreProductsPageState extends State<StoreProductsPage>
                                                   if (isInCart) ...[
                                                     Icon(Icons.check),
                                                     Text(
-                                                        '${FlutterI18n.translate(context, 'products.added')} ${item.amount}'),
+                                                        '${FlutterI18n.translate(context, 'products.added')} ${item.amount}!'),
                                                   ],
                                                   SizedBox(width: 8),
                                                   RawMaterialButton(
