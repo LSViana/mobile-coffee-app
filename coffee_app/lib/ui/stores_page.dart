@@ -1,3 +1,4 @@
+import 'package:coffee_app/business/bloc/user/user_bloc.dart';
 import 'package:coffee_app/business/model/store.dart';
 import 'package:coffee_app/business/bloc/store/store_bloc.dart';
 import 'package:coffee_app/main.dart';
@@ -16,6 +17,7 @@ class StoresPage extends StatefulWidget {
 
 class _StoresPageState extends State<StoresPage> {
   StoreBloc _storeBloc;
+  UserBloc _userBloc;
 
   Future<void> _openStore(Store store) async {
     await Navigator.of(context).push(MaterialPageRoute(
@@ -28,6 +30,8 @@ class _StoresPageState extends State<StoresPage> {
     super.initState();
     //
     _storeBloc = coffeeGetIt<StoreBloc>();
+    _userBloc = coffeeGetIt<UserBloc>();
+    _userBloc.getCurrent();
     _storeBloc.get();
   }
 

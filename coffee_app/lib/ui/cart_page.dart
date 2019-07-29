@@ -89,19 +89,44 @@ class _CartPageState extends State<CartPage> {
       children: <Widget>[
         Icon(Icons.monetization_on),
         SizedBox(width: 12),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Text(FlutterI18n.translate(context, 'cart.total')),
-            Text(
-              'R\$ 12.00',
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
-              style: theme.textTheme.title,
-            ),
-          ],
-        )
+        StreamBuilder<Cart>(
+            stream: _cartBloc.cart,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                final cart = snapshot.data;
+                //
+                return StreamBuilder<Iterable<Product>>(
+                    stream: _productBloc.byStore,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        final products = snapshot.data;
+                        //
+                        final totalPrice = cart.items.map((i) {
+                          final product =
+                              products.firstWhere((p) => p.id == i.productId);
+                          return i.amount * product.price;
+                        }).fold<double>(
+                            0.0, (previous, current) => previous + current);
+                        //
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Text(FlutterI18n.translate(context, 'cart.total')),
+                            Text(
+                              '${products.elementAt(0).priceUnit} ${totalPrice.toStringAsFixed(2)}',
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              style: theme.textTheme.title,
+                            ),
+                          ],
+                        );
+                      }
+                      return SizedBox.shrink();
+                    });
+              }
+              return SizedBox.shrink();
+            })
       ],
     );
   }
