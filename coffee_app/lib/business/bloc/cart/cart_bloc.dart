@@ -66,4 +66,14 @@ class CartBloc {
       _cart.sink.add(cart);
     }
   }
+
+  void updateProductAmount(String productId, int amount) {
+    if (_cart.hasValue) {
+      final cart = _cart.value;
+      final item = cart.items.firstWhere((value) => value.productId == productId);
+      item.amount = amount;
+      // Updating cart
+      _cart.sink.add(cart);
+    }
+  }
 }

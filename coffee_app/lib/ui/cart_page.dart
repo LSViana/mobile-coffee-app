@@ -246,9 +246,62 @@ class _CartPageState extends State<CartPage> {
                                 ),
                               ),
                               Container(
-                                padding: const EdgeInsets.all(8),
+                                padding: const EdgeInsets.all(16),
                                 child: Row(
-                                  children: <Widget>[],
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Expanded(
+                                      flex: 1,
+                                      child: Row(
+                                        children: <Widget>[
+                                          IconButton(
+                                            icon: Icon(Icons.keyboard_arrow_up),
+                                            color: theme.primaryColor,
+                                            onPressed: () =>
+                                                _cartBloc.updateProductAmount(
+                                                    product.id,
+                                                    item.amount + 1),
+                                          ),
+                                          Text(item.amount.toString()),
+                                          IconButton(
+                                            icon:
+                                                Icon(Icons.keyboard_arrow_down),
+                                            color: theme.primaryColor,
+                                            onPressed: item.amount < 2
+                                                ? null
+                                                : () => _cartBloc
+                                                    .updateProductAmount(
+                                                        product.id,
+                                                        item.amount - 1),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    Spacer(),
+                                    Container(
+                                      width: 80,
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: <Widget>[
+                                          Text(
+                                            '${product.priceUnit}',
+                                            style: theme.textTheme.caption,
+                                          ),
+                                          Text(
+                                              '${(item.amount * product.price).toStringAsFixed(2)}',
+                                              style: theme.textTheme.title
+                                                  .copyWith(
+                                                      color:
+                                                          theme.primaryColor))
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               )
                             ],

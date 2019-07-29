@@ -44,7 +44,8 @@
         "total": "Total",
         "deliveryAddress": "Delivery Address",
         "scheduleDelivery": "Schedule Delivery",
-        "items": "Items"
+        "items": "Items",
+        "amount": "Amount"
     },
     "errors": {
         "general": "Something weird happened",
