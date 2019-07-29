@@ -1,5 +1,4 @@
 import 'package:coffee_app/business/model/product.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:coffee_app/business/bloc/cart/cart_bloc.dart';
 import 'package:coffee_app/business/bloc/products/product_bloc.dart';
 import 'package:coffee_app/business/bloc/store/store_bloc.dart';
@@ -22,6 +21,8 @@ class _CartPageState extends State<CartPage> {
   CartBloc _cartBloc;
   ProductBloc _productBloc;
   UserBloc _userBloc;
+  //
+  TextEditingController _deliveryAddressController;
 
   @override
   void initState() {
@@ -31,6 +32,14 @@ class _CartPageState extends State<CartPage> {
     _cartBloc = coffeeGetIt<CartBloc>();
     _productBloc = coffeeGetIt<ProductBloc>();
     _userBloc = coffeeGetIt<UserBloc>();
+    _deliveryAddressController = TextEditingController(text: _cartBloc.getCurrentDeliveryAddress(orElse: _userBloc.getCurrentDeliveryAddress()));
+    _startEventHandlers();
+  }
+
+  void _startEventHandlers() {
+    _deliveryAddressController.addListener(() {
+      _cartBloc.updateDeliveryAddress(_deliveryAddressController.text);
+    });
   }
 
   @override
@@ -80,26 +89,34 @@ class _CartPageState extends State<CartPage> {
   }
 
   Widget _buildDeliveryAddress(BuildContext context, ThemeData theme) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        Icon(Icons.location_on),
-        SizedBox(width: 12),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Text(FlutterI18n.translate(context, 'cart.deliveryAddress')),
-            Text(
-              'Alameda Barão de Limeira, 539',
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
-              style: theme.textTheme.title,
-            ),
-          ],
-        )
-      ],
-    );
+    return StreamBuilder<Cart>(
+        stream: _cartBloc.cart,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            final cart = snapshot.data;
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Icon(Icons.location_on),
+                SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text(FlutterI18n.translate(
+                          context, 'cart.deliveryAddress')),
+                      TextFormField(
+                        controller: _deliveryAddressController,
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            );
+          }
+          return SizedBox.shrink();
+        });
   }
 
   Widget _buildDeliveryTime(BuildContext context, ThemeData theme) {

@@ -46,4 +46,8 @@ class UserBloc {
 
   Future<void> removeAuthenticated() async
     => _repository.removeAuthenticated();
+
+  String getCurrentDeliveryAddress() {
+    return _current?.value?.deliveryAddress ?? '';
+  }
 }

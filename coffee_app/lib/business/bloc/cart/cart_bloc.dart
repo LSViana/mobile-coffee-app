@@ -8,7 +8,11 @@ class CartBloc {
 
   CartBloc() {
     _cart = BehaviorSubject<Cart>();
-    _cart.sink.add(Cart(items: [], storeId: null));
+    _cart.sink.add(Cart(
+        items: [],
+        storeId: null,
+        deliveryAddress: '',
+        deliveryDate: DateTime.now()));
   }
 
   Stream<Cart> get cart => _cart.stream;
@@ -35,9 +39,11 @@ class CartBloc {
   }
 
   void removeProduct(String productId) {
-    final cart = _cart.value;
-    cart.items.removeWhere((item) => item.productId == productId);
-    _cart.sink.add(cart);
+    if (_cart.hasValue) {
+      final cart = _cart.value;
+      cart.items.removeWhere((item) => item.productId == productId);
+      _cart.sink.add(cart);
+    }
   }
 
   CartItem getItem(String productId) {
@@ -45,11 +51,17 @@ class CartBloc {
         ?.firstWhere((item) => item.productId == productId, orElse: () => null);
   }
 
+  String getCurrentDeliveryAddress({String orElse: ''}) {
+    return _cart?.value?.deliveryAddress ?? orElse;
+  }
+
   void restoreToStore(String id) {
     if (_cart.value.storeId != id) {
       _cart.sink.add(Cart(
         items: [],
         storeId: id,
+        deliveryAddress: null,
+        deliveryDate: null,
       ));
     }
   }
@@ -70,8 +82,18 @@ class CartBloc {
   void updateProductAmount(String productId, int amount) {
     if (_cart.hasValue) {
       final cart = _cart.value;
-      final item = cart.items.firstWhere((value) => value.productId == productId);
+      final item =
+          cart.items.firstWhere((value) => value.productId == productId);
       item.amount = amount;
+      // Updating cart
+      _cart.sink.add(cart);
+    }
+  }
+
+  void updateDeliveryAddress(String deliveryAddress) {
+    if (_cart.hasValue) {
+      final cart = _cart.value;
+      cart.deliveryAddress = deliveryAddress;
       // Updating cart
       _cart.sink.add(cart);
     }

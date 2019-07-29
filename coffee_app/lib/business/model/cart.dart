@@ -6,5 +6,5 @@ class Cart {
   String deliveryAddress;
   DateTime deliveryDate;
 
-  Cart({this.items, this.storeId});
+  Cart({this.items, this.storeId, this.deliveryAddress, this.deliveryDate});
 }
