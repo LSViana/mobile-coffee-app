@@ -6,11 +6,14 @@
         "checkout": "Checkout",
         "remove": "Remove",
         "schedule": "Schedule",
-        "send": "Send"
+        "send": "Send",
+        "cancel": "Cancel",
+        "reset": "Reset"
     },
     "names": {
         "app": "Coffee App",
-        "now": "Now"
+        "now": "Now",
+        "success": "Success"
     },
     "signIn": {
         "title": "Sign In",
@@ -46,7 +49,10 @@
         "deliveryAddress": "Delivery Address",
         "scheduleDelivery": "Schedule Delivery",
         "items": "Items",
-        "amount": "Amount"
+        "amount": "Amount",
+        "reset": "Reset your Cart",
+        "resetDescription": "Opening a store while having items of other store in your cart will restore it, are you sure?",
+        "requestSent": "Request Sent"
     },
     "errors": {
         "general": "Something weird happened",

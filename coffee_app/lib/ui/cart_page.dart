@@ -3,8 +3,9 @@ import 'package:coffee_app/business/bloc/cart/cart_bloc.dart';
 import 'package:coffee_app/business/bloc/products/product_bloc.dart';
 import 'package:coffee_app/business/bloc/user/user_bloc.dart';
 import 'package:coffee_app/business/model/cart.dart';
-import 'package:coffee_app/business/model/cart_delivery.dart';
 import 'package:coffee_app/main.dart';
+import 'package:coffee_app/ui/request_success_page.dart';
+import 'package:coffee_app/widgets/general_error_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -29,8 +30,17 @@ class _CartPageState extends State<CartPage> {
         _sendingRequest = true;
       });
       await _cartBloc.send();
+      _cartBloc.restore();
+      await Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (context) => RequestSuccessPage(),
+      ));
     } catch (e) {
       // Handle error in sending request
+      await showDialog(
+        context: context,
+        builder: (context) => GeneralErrorDialog(),
+      );
+      // Just show the button again if there's any error, in the success case this page won't be shown anymore
       setState(() {
         _sendingRequest = false;
       });
@@ -53,6 +63,7 @@ class _CartPageState extends State<CartPage> {
   }
 
   void _startEventHandlers() {
+    _cartBloc.updateDeliveryAddress(_deliveryAddressController.text);
     _deliveryAddressController.addListener(() {
       _cartBloc.updateDeliveryAddress(_deliveryAddressController.text);
     });
@@ -70,14 +81,13 @@ class _CartPageState extends State<CartPage> {
             appBar: AppBar(
               title: Text(FlutterI18n.translate(context, 'cart.title')),
             ),
-            floatingActionButton: (cart?.items?.isEmpty ?? true) ||
-                    (_sendingRequest)
+            floatingActionButton: _sendingRequest
                 ? null
                 : FloatingActionButton.extended(
                     icon: Icon(Icons.send),
                     label: Text(FlutterI18n.translate(context, 'actions.send')
                         .toUpperCase()),
-                    onPressed: _sendRequest,
+                    onPressed: snapshot.hasData ? _sendRequest : null,
                     backgroundColor: theme.primaryColor,
                   ),
             body: ListView(
@@ -86,8 +96,8 @@ class _CartPageState extends State<CartPage> {
                 _buildTotalPrice(context, theme, cart),
                 SizedBox(height: 12),
                 _buildDeliveryAddress(context, theme, cart),
-                SizedBox(height: 12),
-                _buildDeliveryTime(context, theme, cart),
+                // SizedBox(height: 12),
+                // _buildDeliveryTime(context, theme, cart),
                 SizedBox(height: 12),
                 _buildCartItems(context, theme, cart),
               ],
@@ -100,7 +110,10 @@ class _CartPageState extends State<CartPage> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        Icon(Icons.monetization_on),
+        Icon(
+          Icons.monetization_on,
+          color: theme.primaryColor,
+        ),
         SizedBox(width: 12),
         StreamBuilder<Iterable<Product>>(
             stream: _productBloc.byStore,
@@ -139,7 +152,10 @@ class _CartPageState extends State<CartPage> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        Icon(Icons.location_on),
+        Icon(
+          Icons.location_on,
+          color: theme.primaryColor,
+        ),
         SizedBox(width: 12),
         Expanded(
           child: Column(
@@ -157,48 +173,49 @@ class _CartPageState extends State<CartPage> {
     );
   }
 
-  Widget _buildDeliveryTime(BuildContext context, ThemeData theme, Cart cart) {
-    final cartDelivery =
-        cart?.deliveryDate == null ? CartDelivery.now : CartDelivery.schedule;
-    //
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        Icon(Icons.access_time),
-        SizedBox(width: 12),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Text(FlutterI18n.translate(context, 'cart.scheduleDelivery')),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Radio(
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  value: CartDelivery.now,
-                  groupValue: cartDelivery,
-                  activeColor: theme.primaryColor,
-                  onChanged: (value) => _cartBloc.setScheduleDelivery(value),
-                ),
-                Text(FlutterI18n.translate(context, 'names.now')),
-                SizedBox(width: 16),
-                Radio(
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  value: CartDelivery.schedule,
-                  groupValue: cartDelivery,
-                  activeColor: theme.primaryColor,
-                  // TODO Open date picker
-                  onChanged: (value) => _cartBloc.setScheduleDelivery(value),
-                ),
-                Text(FlutterI18n.translate(context, 'actions.schedule')),
-              ],
-            ),
-          ],
-        )
-      ],
-    );
-  }
+  // This widget may be recovered later
+  // Widget _buildDeliveryTime(BuildContext context, ThemeData theme, Cart cart) {
+  //   final cartDelivery =
+  //       cart?.deliveryDate == null ? CartDelivery.now : CartDelivery.schedule;
+  //   //
+  //   return Row(
+  //     crossAxisAlignment: CrossAxisAlignment.center,
+  //     children: <Widget>[
+  //       Icon(Icons.access_time),
+  //       SizedBox(width: 12),
+  //       Column(
+  //         crossAxisAlignment: CrossAxisAlignment.start,
+  //         mainAxisSize: MainAxisSize.min,
+  //         children: <Widget>[
+  //           Text(FlutterI18n.translate(context, 'cart.scheduleDelivery')),
+  //           Row(
+  //             mainAxisAlignment: MainAxisAlignment.start,
+  //             children: <Widget>[
+  //               Radio(
+  //                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+  //                 value: CartDelivery.now,
+  //                 groupValue: cartDelivery,
+  //                 activeColor: theme.primaryColor,
+  //                 onChanged: (value) => _cartBloc.setScheduleDelivery(value),
+  //               ),
+  //               Text(FlutterI18n.translate(context, 'names.now')),
+  //               SizedBox(width: 16),
+  //               Radio(
+  //                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+  //                 value: CartDelivery.schedule,
+  //                 groupValue: cartDelivery,
+  //                 activeColor: theme.primaryColor,
+  //                 // TODO Open date picker
+  //                 onChanged: (value) => _cartBloc.setScheduleDelivery(value),
+  //               ),
+  //               Text(FlutterI18n.translate(context, 'actions.schedule')),
+  //             ],
+  //           ),
+  //         ],
+  //       )
+  //     ],
+  //   );
+  // }
 
   Widget _buildCartItems(BuildContext context, ThemeData theme, Cart cart) {
     return Column(
@@ -207,7 +224,10 @@ class _CartPageState extends State<CartPage> {
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Icon(Icons.format_list_numbered),
+            Icon(
+              Icons.format_list_numbered,
+              color: theme.primaryColor,
+            ),
             SizedBox(width: 12),
             Text(FlutterI18n.translate(context, 'cart.items')),
           ],

@@ -34,9 +34,7 @@ class _StoreProductsPageState extends State<StoreProductsPage>
 
   Future<void> _openCheckout() async {
     await Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => CartPage(),
-      maintainState: false
-    ));
+        builder: (context) => CartPage(), maintainState: false));
   }
 
   @override
@@ -257,8 +255,9 @@ class _StoreProductsPageState extends State<StoreProductsPage>
                                                     ),
                                                     textColor:
                                                         theme.primaryColor,
-                                                    onPressed: () =>
-                                                        _removeProductFromCart(
+                                                    onPressed: () => !isInCart
+                                                        ? null
+                                                        : _removeProductFromCart(
                                                             product),
                                                   )
                                                 ],
@@ -275,8 +274,10 @@ class _StoreProductsPageState extends State<StoreProductsPage>
                                                       .toUpperCase(),
                                                 ),
                                                 color: theme.primaryColor,
-                                                onPressed: () =>
-                                                    _addProductToCart(product),
+                                                onPressed: () => isInCart
+                                                    ? null
+                                                    : _addProductToCart(
+                                                        product),
                                               ),
                                             ),
                                           ),

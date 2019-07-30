@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io' show HttpStatus;
 
 import 'package:coffee_app/business/exceptions/http_exception.dart';
@@ -17,7 +18,10 @@ class CartRepository {
   }
 
   Future<void> send(Cart cart) async {
-    final response = await _client.post('${_apiSettings.base}/requests');
+    final response = await _client.post(
+      '${_apiSettings.base}/requests',
+      body: jsonEncode(cart.toJson())
+    );
     if(response.statusCode == HttpStatus.ok) {
       // Request successfully created
     } else {

@@ -117,4 +117,15 @@ class CartBloc {
       await _repository.send(cart);
     }
   }
+
+  void restore() {
+    if (_cart.hasValue) {
+      _cart.sink.add(Cart(
+        items: [],
+        storeId: _cart.value.storeId,
+        deliveryAddress: null,
+        deliveryDate: null,
+      ));
+    }
+  }
 }
