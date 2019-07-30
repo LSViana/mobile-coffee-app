@@ -1,7 +1,6 @@
 import 'package:coffee_app/business/model/product.dart';
 import 'package:coffee_app/business/bloc/cart/cart_bloc.dart';
 import 'package:coffee_app/business/bloc/products/product_bloc.dart';
-import 'package:coffee_app/business/bloc/store/store_bloc.dart';
 import 'package:coffee_app/business/bloc/user/user_bloc.dart';
 import 'package:coffee_app/business/model/cart.dart';
 import 'package:coffee_app/business/model/cart_delivery.dart';
@@ -22,8 +21,6 @@ class _CartPageState extends State<CartPage> {
   CartBloc _cartBloc;
   ProductBloc _productBloc;
   UserBloc _userBloc;
-  //
-  bool _cartEmpty;
 
   Future<void> _sendRequest() async {
     // TODO Send request
@@ -40,8 +37,6 @@ class _CartPageState extends State<CartPage> {
     _deliveryAddressController = TextEditingController(
         text: _cartBloc.getCurrentDeliveryAddress(
             orElse: _userBloc.getCurrentDeliveryAddress()));
-    _cartEmpty =
-        false; // Assume it is false because this screen isn't not reachable with the cart empty
     _startEventHandlers();
   }
 
@@ -55,75 +50,70 @@ class _CartPageState extends State<CartPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     //
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(FlutterI18n.translate(context, 'cart.title')),
-      ),
-      floatingActionButton: _cartEmpty
-          ? null
-          : FloatingActionButton.extended(
-              icon: Icon(Icons.send),
-              label: Text(
-                  FlutterI18n.translate(context, 'actions.send').toUpperCase()),
-              onPressed: _sendRequest,
-              backgroundColor: theme.primaryColor,
+    return StreamBuilder<Cart>(
+        stream: _cartBloc.cart,
+        builder: (context, snapshot) {
+          final cart = snapshot.data;
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(FlutterI18n.translate(context, 'cart.title')),
             ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: <Widget>[
-          _buildTotalPrice(context, theme),
-          SizedBox(height: 12),
-          _buildDeliveryAddress(context, theme),
-          SizedBox(height: 12),
-          _buildDeliveryTime(context, theme),
-          SizedBox(height: 12),
-          _buildCartItems(context, theme),
-        ],
-      ),
-    );
+            floatingActionButton: cart?.items?.isEmpty ?? true
+                ? null
+                : FloatingActionButton.extended(
+                    icon: Icon(Icons.send),
+                    label: Text(FlutterI18n.translate(context, 'actions.send')
+                        .toUpperCase()),
+                    onPressed: _sendRequest,
+                    backgroundColor: theme.primaryColor,
+                  ),
+            body: ListView(
+              padding: const EdgeInsets.all(16),
+              children: <Widget>[
+                _buildTotalPrice(context, theme, cart),
+                SizedBox(height: 12),
+                _buildDeliveryAddress(context, theme, cart),
+                SizedBox(height: 12),
+                _buildDeliveryTime(context, theme, cart),
+                SizedBox(height: 12),
+                _buildCartItems(context, theme, cart),
+              ],
+            ),
+          );
+        });
   }
 
-  Widget _buildTotalPrice(BuildContext context, ThemeData theme) {
+  Widget _buildTotalPrice(BuildContext context, ThemeData theme, Cart cart) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         Icon(Icons.monetization_on),
         SizedBox(width: 12),
-        StreamBuilder<Cart>(
-            stream: _cartBloc.cart,
+        StreamBuilder<Iterable<Product>>(
+            stream: _productBloc.byStore,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                final cart = snapshot.data;
+                final products = snapshot.data;
                 //
-                return StreamBuilder<Iterable<Product>>(
-                    stream: _productBloc.byStore,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        final products = snapshot.data;
-                        //
-                        final totalPrice = cart.items.map((i) {
-                          final product =
-                              products.firstWhere((p) => p.id == i.productId);
-                          return i.amount * product.price;
-                        }).fold<double>(
-                            0.0, (previous, current) => previous + current);
-                        //
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Text(FlutterI18n.translate(context, 'cart.total')),
-                            Text(
-                              '${products.elementAt(0).priceUnit} ${totalPrice.toStringAsFixed(2)}',
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              style: theme.textTheme.title,
-                            ),
-                          ],
-                        );
-                      }
-                      return SizedBox.shrink();
-                    });
+                final totalPrice = cart.items.map((i) {
+                  final product =
+                      products.firstWhere((p) => p.id == i.productId);
+                  return i.amount * product.price;
+                }).fold<double>(0.0, (previous, current) => previous + current);
+                //
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text(FlutterI18n.translate(context, 'cart.total')),
+                    Text(
+                      '${products.elementAt(0).priceUnit} ${totalPrice.toStringAsFixed(2)}',
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style: theme.textTheme.title,
+                    ),
+                  ],
+                );
               }
               return SizedBox.shrink();
             })
@@ -131,38 +121,33 @@ class _CartPageState extends State<CartPage> {
     );
   }
 
-  Widget _buildDeliveryAddress(BuildContext context, ThemeData theme) {
-    return StreamBuilder<Cart>(
-        stream: _cartBloc.cart,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final cart = snapshot.data;
-            return Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Icon(Icons.location_on),
-                SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Text(FlutterI18n.translate(
-                          context, 'cart.deliveryAddress')),
-                      TextFormField(
-                        controller: _deliveryAddressController,
-                      ),
-                    ],
-                  ),
-                )
-              ],
-            );
-          }
-          return SizedBox.shrink();
-        });
+  Widget _buildDeliveryAddress(
+      BuildContext context, ThemeData theme, Cart cart) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Icon(Icons.location_on),
+        SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text(FlutterI18n.translate(context, 'cart.deliveryAddress')),
+              TextFormField(
+                controller: _deliveryAddressController,
+              ),
+            ],
+          ),
+        )
+      ],
+    );
   }
 
-  Widget _buildDeliveryTime(BuildContext context, ThemeData theme) {
+  Widget _buildDeliveryTime(BuildContext context, ThemeData theme, Cart cart) {
+    final cartDelivery =
+        cart?.deliveryDate == null ? CartDelivery.now : CartDelivery.schedule;
+    //
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
@@ -173,50 +158,36 @@ class _CartPageState extends State<CartPage> {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Text(FlutterI18n.translate(context, 'cart.scheduleDelivery')),
-            StreamBuilder<Cart>(
-              stream: _cartBloc.cart,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  final cart = snapshot.data;
-                  final cartDelivery = cart.deliveryDate == null
-                      ? CartDelivery.now
-                      : CartDelivery.schedule;
-                  //
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Radio(
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        value: CartDelivery.now,
-                        groupValue: cartDelivery,
-                        activeColor: theme.primaryColor,
-                        onChanged: (value) =>
-                            _cartBloc.setScheduleDelivery(value),
-                      ),
-                      Text(FlutterI18n.translate(context, 'names.now')),
-                      SizedBox(width: 16),
-                      Radio(
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        value: CartDelivery.schedule,
-                        groupValue: cartDelivery,
-                        activeColor: theme.primaryColor,
-                        onChanged: (value) =>
-                            _cartBloc.setScheduleDelivery(value),
-                      ),
-                      Text(FlutterI18n.translate(context, 'actions.schedule')),
-                    ],
-                  );
-                }
-                return SizedBox.shrink();
-              },
-            )
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Radio(
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  value: CartDelivery.now,
+                  groupValue: cartDelivery,
+                  activeColor: theme.primaryColor,
+                  onChanged: (value) => _cartBloc.setScheduleDelivery(value),
+                ),
+                Text(FlutterI18n.translate(context, 'names.now')),
+                SizedBox(width: 16),
+                Radio(
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  value: CartDelivery.schedule,
+                  groupValue: cartDelivery,
+                  activeColor: theme.primaryColor,
+                  // TODO Open date picker
+                  onChanged: (value) => _cartBloc.setScheduleDelivery(value),
+                ),
+                Text(FlutterI18n.translate(context, 'actions.schedule')),
+              ],
+            ),
           ],
         )
       ],
     );
   }
 
-  Widget _buildCartItems(BuildContext context, ThemeData theme) {
+  Widget _buildCartItems(BuildContext context, ThemeData theme, Cart cart) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
@@ -229,159 +200,139 @@ class _CartPageState extends State<CartPage> {
           ],
         ),
         SizedBox(height: 8),
-        StreamBuilder<Cart>(
-          stream: _cartBloc.cart,
-          builder: (context, snapshotCart) {
-            if (snapshotCart.hasData) {
-              final cart = snapshotCart.data;
-              return StreamBuilder<Iterable<Product>>(
-                stream: _productBloc.byStore,
-                builder: (context, snapshotProducts) {
-                  if (snapshotProducts.hasData) {
-                    final products = snapshotProducts.data;
-                    return ListView.builder(
-                      physics: NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: cart.items.length,
-                      itemBuilder: (context, index) {
-                        final item = cart.items.elementAt(index);
-                        final product = products.firstWhere(
-                            (product) => product.id == item.productId);
-                        return Card(
-                          key: Key(product.id.toString()),
-                          clipBehavior: Clip.hardEdge,
-                          margin: const EdgeInsets.symmetric(
-                              vertical: 4, horizontal: 0),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              Container(
-                                color: theme.primaryColor,
-                                padding: const EdgeInsets.all(8),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    Container(
-                                      padding: const EdgeInsets.all(8),
-                                      width: 64,
-                                      height: 64,
-                                      child: Material(
-                                        shape: CircleBorder(),
-                                        clipBehavior: Clip.hardEdge,
-                                        child: FadeInImage.memoryNetwork(
-                                          placeholder: kTransparentImage,
-                                          image: product.imageUrl,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
+        StreamBuilder<Iterable<Product>>(
+            stream: _productBloc.byStore,
+            builder: (context, snapshotProducts) {
+              if (snapshotProducts.hasData) {
+                final products = snapshotProducts.data;
+                return ListView.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: cart.items.length,
+                  itemBuilder: (context, index) {
+                    final item = cart.items.elementAt(index);
+                    final product = products
+                        .firstWhere((product) => product.id == item.productId);
+                    return Card(
+                      key: Key(product.id.toString()),
+                      clipBehavior: Clip.hardEdge,
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 4, horizontal: 0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Container(
+                            color: theme.primaryColor,
+                            padding: const EdgeInsets.all(8),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Container(
+                                  padding: const EdgeInsets.all(8),
+                                  width: 64,
+                                  height: 64,
+                                  child: Material(
+                                    shape: CircleBorder(),
+                                    clipBehavior: Clip.hardEdge,
+                                    child: FadeInImage.memoryNetwork(
+                                      placeholder: kTransparentImage,
+                                      image: product.imageUrl,
+                                      fit: BoxFit.cover,
                                     ),
-                                    SizedBox(width: 8),
-                                    Expanded(
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          Text(
-                                            product.name,
-                                            style: theme.textTheme.subtitle,
-                                          ),
-                                          Text(
-                                            product.description,
-                                            style: theme.textTheme.caption,
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 1,
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                    SizedBox(width: 8),
-                                    IconButton(
-                                      icon: Icon(Icons.cancel),
-                                      onPressed: () {
-                                        _cartBloc.removeProduct(product.id);
-                                        setState(() {
-                                          _cartEmpty = _cartBloc.isEmpty();
-                                        });
-                                      },
-                                    ),
-                                  ],
+                                  ),
                                 ),
-                              ),
-                              Container(
-                                padding: const EdgeInsets.all(16),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Expanded(
-                                      flex: 1,
-                                      child: Row(
-                                        children: <Widget>[
-                                          IconButton(
-                                            icon: Icon(Icons.keyboard_arrow_up),
-                                            color: theme.primaryColor,
-                                            onPressed: () =>
+                                SizedBox(width: 8),
+                                Expanded(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Text(
+                                        product.name,
+                                        style: theme.textTheme.subtitle,
+                                      ),
+                                      Text(
+                                        product.description,
+                                        style: theme.textTheme.caption,
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(width: 8),
+                                IconButton(
+                                  icon: Icon(Icons.cancel),
+                                  onPressed: () {
+                                    _cartBloc.removeProduct(product.id);
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.all(16),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Expanded(
+                                  flex: 1,
+                                  child: Row(
+                                    children: <Widget>[
+                                      IconButton(
+                                        icon: Icon(Icons.keyboard_arrow_up),
+                                        color: theme.primaryColor,
+                                        onPressed: () =>
+                                            _cartBloc.updateProductAmount(
+                                                product.id, item.amount + 1),
+                                      ),
+                                      Text(item.amount.toString()),
+                                      IconButton(
+                                        icon: Icon(Icons.keyboard_arrow_down),
+                                        color: theme.primaryColor,
+                                        onPressed: item.amount < 2
+                                            ? null
+                                            : () =>
                                                 _cartBloc.updateProductAmount(
                                                     product.id,
-                                                    item.amount + 1),
-                                          ),
-                                          Text(item.amount.toString()),
-                                          IconButton(
-                                            icon:
-                                                Icon(Icons.keyboard_arrow_down),
-                                            color: theme.primaryColor,
-                                            onPressed: item.amount < 2
-                                                ? null
-                                                : () => _cartBloc
-                                                    .updateProductAmount(
-                                                        product.id,
-                                                        item.amount - 1),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                    Spacer(),
-                                    Container(
-                                      width: 80,
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: <Widget>[
-                                          Text(
-                                            '${product.priceUnit}',
-                                            style: theme.textTheme.caption,
-                                          ),
-                                          SizedBox(width: 4),
-                                          Text(
-                                              '${(item.amount * product.price).toStringAsFixed(2)}',
-                                              style: theme.textTheme.title
-                                                  .copyWith(
-                                                      color:
-                                                          theme.primaryColor))
-                                        ],
-                                      ),
-                                    ),
-                                  ],
+                                                    item.amount - 1),
+                                      )
+                                    ],
+                                  ),
                                 ),
-                              )
-                            ],
-                          ),
-                        );
-                      },
+                                Spacer(),
+                                Container(
+                                  width: 80,
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      Text(
+                                        '${product.priceUnit}',
+                                        style: theme.textTheme.caption,
+                                      ),
+                                      SizedBox(width: 4),
+                                      Text(
+                                          '${(item.amount * product.price).toStringAsFixed(2)}',
+                                          style: theme.textTheme.title.copyWith(
+                                              color: theme.primaryColor))
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
                     );
-                  }
-                  return SizedBox.shrink();
-                },
-              );
-            }
-            return SizedBox.shrink();
-          },
-        ),
+                  },
+                );
+              }
+              return SizedBox.shrink();
+            }),
         SizedBox(height: 56),
       ],
     );

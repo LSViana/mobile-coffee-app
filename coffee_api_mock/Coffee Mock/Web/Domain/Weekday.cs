@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace Web.Domain
 {
     [Flags]
-    public enum WeekDay : int
+    public enum WeekDay
     {
         Sunday = 1,
         Monday = 2,
