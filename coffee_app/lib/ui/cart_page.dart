@@ -1,5 +1,5 @@
 import 'package:coffee_app/business/model/product.dart';
-import 'package:coffee_app/business/bloc/cart/cart_bloc.dart';
+import 'package:coffee_app/business/bloc/cart/request_bloc.dart';
 import 'package:coffee_app/business/bloc/products/product_bloc.dart';
 import 'package:coffee_app/business/bloc/user/user_bloc.dart';
 import 'package:coffee_app/business/model/cart.dart';
@@ -20,7 +20,7 @@ class _CartPageState extends State<CartPage> {
   TextEditingController _deliveryAddressController;
   bool _sendingRequest;
   //
-  CartBloc _cartBloc;
+  RequestBloc _requestBloc;
   ProductBloc _productBloc;
   UserBloc _userBloc;
 
@@ -29,8 +29,8 @@ class _CartPageState extends State<CartPage> {
       setState(() {
         _sendingRequest = true;
       });
-      await _cartBloc.send();
-      _cartBloc.restore();
+      await _requestBloc.send();
+      _requestBloc.restore();
       await Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (context) => RequestSuccessPage(),
       ));
@@ -51,21 +51,21 @@ class _CartPageState extends State<CartPage> {
   void initState() {
     super.initState();
     //
-    _cartBloc = coffeeGetIt<CartBloc>();
+    _requestBloc = coffeeGetIt<RequestBloc>();
     _productBloc = coffeeGetIt<ProductBloc>();
     _userBloc = coffeeGetIt<UserBloc>();
     //
     _sendingRequest = false;
     _deliveryAddressController = TextEditingController(
-        text: _cartBloc.getCurrentDeliveryAddress(
+        text: _requestBloc.getCurrentDeliveryAddress(
             orElse: _userBloc.getCurrentDeliveryAddress()));
     _startEventHandlers();
   }
 
   void _startEventHandlers() {
-    _cartBloc.updateDeliveryAddress(_deliveryAddressController.text);
+    _requestBloc.updateDeliveryAddress(_deliveryAddressController.text);
     _deliveryAddressController.addListener(() {
-      _cartBloc.updateDeliveryAddress(_deliveryAddressController.text);
+      _requestBloc.updateDeliveryAddress(_deliveryAddressController.text);
     });
   }
 
@@ -74,7 +74,7 @@ class _CartPageState extends State<CartPage> {
     final theme = Theme.of(context);
     //
     return StreamBuilder<Cart>(
-        stream: _cartBloc.cart,
+        stream: _requestBloc.cart,
         builder: (context, snapshot) {
           final cart = snapshot.data;
           return Scaffold(
@@ -299,7 +299,7 @@ class _CartPageState extends State<CartPage> {
                                 IconButton(
                                   icon: Icon(Icons.cancel),
                                   onPressed: () {
-                                    _cartBloc.removeProduct(product.id);
+                                    _requestBloc.removeProduct(product.id);
                                   },
                                 ),
                               ],
@@ -318,7 +318,7 @@ class _CartPageState extends State<CartPage> {
                                         icon: Icon(Icons.keyboard_arrow_up),
                                         color: theme.primaryColor,
                                         onPressed: () =>
-                                            _cartBloc.updateProductAmount(
+                                            _requestBloc.updateProductAmount(
                                                 product.id, item.amount + 1),
                                       ),
                                       Text(item.amount.toString()),
@@ -328,7 +328,7 @@ class _CartPageState extends State<CartPage> {
                                         onPressed: item.amount < 2
                                             ? null
                                             : () =>
-                                                _cartBloc.updateProductAmount(
+                                                _requestBloc.updateProductAmount(
                                                     product.id,
                                                     item.amount - 1),
                                       )

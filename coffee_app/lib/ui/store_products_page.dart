@@ -1,4 +1,4 @@
-import 'package:coffee_app/business/bloc/cart/cart_bloc.dart';
+import 'package:coffee_app/business/bloc/cart/request_bloc.dart';
 import 'package:coffee_app/business/bloc/products/product_bloc.dart';
 import 'package:coffee_app/business/model/cart.dart';
 import 'package:coffee_app/business/model/product.dart';
@@ -22,14 +22,14 @@ class _StoreProductsPageState extends State<StoreProductsPage>
     with SingleTickerProviderStateMixin {
   TabController _tabController;
   ProductBloc _productBloc;
-  CartBloc _cartBloc;
+  RequestBloc _requestBloc;
 
   void _addProductToCart(Product p) {
-    _cartBloc.addProduct(p.id);
+    _requestBloc.addProduct(p.id);
   }
 
   void _removeProductFromCart(Product p) {
-    _cartBloc.removeProduct(p.id);
+    _requestBloc.removeProduct(p.id);
   }
 
   Future<void> _openCheckout() async {
@@ -41,8 +41,8 @@ class _StoreProductsPageState extends State<StoreProductsPage>
   void initState() {
     super.initState();
     //
-    _cartBloc = coffeeGetIt<CartBloc>();
-    _cartBloc.restoreToStore(widget.store.id);
+    _requestBloc = coffeeGetIt<RequestBloc>();
+    _requestBloc.restoreToStore(widget.store.id);
     _productBloc = coffeeGetIt<ProductBloc>();
     _productBloc.listByStore(widget.store.id);
     _tabController = TabController(
@@ -57,7 +57,7 @@ class _StoreProductsPageState extends State<StoreProductsPage>
     // TODO Refactor screen into smaller widgets
     final theme = Theme.of(context);
     return StreamBuilder<Cart>(
-        stream: _cartBloc.cart,
+        stream: _requestBloc.cart,
         builder: (context, snapshot) {
           final cart = snapshot.data;
           //
@@ -179,9 +179,9 @@ class _StoreProductsPageState extends State<StoreProductsPage>
                                   ),
                                 ),
                                 StreamBuilder<Cart>(
-                                  stream: _cartBloc.cart,
+                                  stream: _requestBloc.cart,
                                   builder: (context, snapshot) {
-                                    final item = _cartBloc.getItem(product.id);
+                                    final item = _requestBloc.getItem(product.id);
                                     final isInCart = item != null;
                                     return Row(
                                       mainAxisAlignment:

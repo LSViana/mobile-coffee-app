@@ -27,12 +27,16 @@ class Store {
     name = json["name"];
     imageUrl = json["imageUrl"];
     open = json["open"];
-    openingTime = parseDurationFromHours(json["openingTime"]);
-    closingTime = parseDurationFromHours(json["closingTime"]);
+    if (json["openingTime"] != null)
+      openingTime = parseDurationFromHours(json["openingTime"]);
+    if (json["closingTime"] != null)
+      closingTime = parseDurationFromHours(json["closingTime"]);
     workingDays = json["workingDays"];
-    categories = json["categories"].map((value) => Category.fromJson(value))
-      .cast<Category>()
-      .toList();
+    if (json["categories"] != null)
+      categories = json["categories"]
+          .map((value) => Category.fromJson(value))
+          .cast<Category>()
+          .toList();
   }
 
   Map<String, dynamic> toJson() {

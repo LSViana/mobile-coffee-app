@@ -1,5 +1,5 @@
-import 'package:coffee_app/business/bloc/cart/cart_bloc.dart';
-import 'package:coffee_app/business/bloc/cart/cart_repository.dart';
+import 'package:coffee_app/business/bloc/cart/request_bloc.dart';
+import 'package:coffee_app/business/bloc/cart/request_repository.dart';
 import 'package:coffee_app/business/bloc/products/product_bloc.dart';
 import 'package:coffee_app/business/bloc/products/product_repository.dart';
 import 'package:coffee_app/business/bloc/store/store_bloc.dart';
@@ -33,8 +33,8 @@ void registerGeneralServices() {
 }
 
 void registerCart() {
-  coffeeGetIt.registerLazySingleton(() => CartBloc());
-  coffeeGetIt.registerLazySingleton((() => CartRepository()));
+  coffeeGetIt.registerLazySingleton(() => RequestBloc());
+  coffeeGetIt.registerLazySingleton((() => RequestRepository()));
 }
 
 void registerStore() {

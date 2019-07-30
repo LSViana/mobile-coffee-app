@@ -15,6 +15,6 @@ String writeDateTime(DateTime dateTime) {
 }
 
 DateTime parseDateTime(String dateTimeText) {
-  final dateTime = DateFormat("M'/'d'/'y h':'m':'s").parse(dateTimeText);
+  final dateTime = DateTime.parse(dateTimeText);
   return dateTime;
 }

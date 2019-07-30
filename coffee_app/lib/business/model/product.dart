@@ -26,7 +26,7 @@ class Product {
     name = json["name"];
     description = json["description"];
     imageUrl = json["imageUrl"];
-    price = json["price"].toDouble();
+    if (json["price"] != null) price = json["price"].toDouble();
     priceUnit = json["priceUnit"];
     favorite = json["favorite"];
     categoryId = json["categoryId"];

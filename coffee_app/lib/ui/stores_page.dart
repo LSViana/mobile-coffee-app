@@ -1,4 +1,4 @@
-import 'package:coffee_app/business/bloc/cart/cart_bloc.dart';
+import 'package:coffee_app/business/bloc/cart/request_bloc.dart';
 import 'package:coffee_app/business/bloc/user/user_bloc.dart';
 import 'package:coffee_app/business/model/cart.dart';
 import 'package:coffee_app/business/model/store.dart';
@@ -20,7 +20,7 @@ class StoresPage extends StatefulWidget {
 class _StoresPageState extends State<StoresPage> {
   StoreBloc _storeBloc;
   UserBloc _userBloc;
-  CartBloc _cartBloc;
+  RequestBloc _cartBloc;
 
   Future<void> _openStore(Store store, Cart cart) async {
     final theme = Theme.of(context);
@@ -69,7 +69,7 @@ class _StoresPageState extends State<StoresPage> {
     super.initState();
     //
     _storeBloc = coffeeGetIt<StoreBloc>();
-    _cartBloc = coffeeGetIt<CartBloc>();
+    _cartBloc = coffeeGetIt<RequestBloc>();
     _userBloc = coffeeGetIt<UserBloc>();
     _userBloc.getCurrent();
     _storeBloc.get();

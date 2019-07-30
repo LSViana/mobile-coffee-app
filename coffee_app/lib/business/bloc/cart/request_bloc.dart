@@ -1,17 +1,24 @@
-import 'package:coffee_app/business/bloc/cart/cart_repository.dart';
+import 'package:coffee_app/business/bloc/cart/request_repository.dart';
 import 'package:coffee_app/business/model/cart.dart';
 import 'package:coffee_app/business/model/cart_delivery.dart';
 import 'package:coffee_app/business/model/cart_item.dart';
+import 'package:coffee_app/business/model/request.dart';
 import 'package:coffee_app/main.dart';
 import 'package:rxdart/rxdart.dart';
 
-class CartBloc {
+class RequestBloc {
   BehaviorSubject<Cart> _cart;
-  CartRepository _repository;
+  RequestRepository _repository;
+  BehaviorSubject<Iterable<Request>> _mine;
 
-  CartBloc() {
-    _repository = coffeeGetIt<CartRepository>();
+  RequestBloc() {
+    _repository = coffeeGetIt<RequestRepository>();
     _cart = BehaviorSubject<Cart>();
+    _mine = BehaviorSubject<Iterable<Request>>();
+    _startDefaultValues();
+  }
+
+  void _startDefaultValues() {
     _cart.sink.add(Cart(
         items: [],
         storeId: null,
@@ -20,6 +27,7 @@ class CartBloc {
   }
 
   Stream<Cart> get cart => _cart.stream;
+  Stream<Iterable<Request>> get mine => _mine.stream;
 
   Future<void> dispose() async {
     await _cart.close();
@@ -126,6 +134,18 @@ class CartBloc {
         deliveryAddress: null,
         deliveryDate: null,
       ));
+    }
+  }
+
+  Future<Iterable<Request>> getMine() async {
+    try {
+      _mine.add(null);
+      final mine = await _repository.getMine();
+      _mine.add(mine);
+      return mine;
+    } catch(e) {
+      _mine.addError(e);
+      return null;
     }
   }
 }
