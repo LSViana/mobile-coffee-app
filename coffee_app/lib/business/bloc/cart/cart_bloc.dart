@@ -1,12 +1,16 @@
+import 'package:coffee_app/business/bloc/cart/cart_repository.dart';
 import 'package:coffee_app/business/model/cart.dart';
 import 'package:coffee_app/business/model/cart_delivery.dart';
 import 'package:coffee_app/business/model/cart_item.dart';
+import 'package:coffee_app/main.dart';
 import 'package:rxdart/rxdart.dart';
 
 class CartBloc {
   BehaviorSubject<Cart> _cart;
+  CartRepository _repository;
 
   CartBloc() {
+    _repository = coffeeGetIt<CartRepository>();
     _cart = BehaviorSubject<Cart>();
     _cart.sink.add(Cart(
         items: [],
@@ -16,6 +20,10 @@ class CartBloc {
   }
 
   Stream<Cart> get cart => _cart.stream;
+
+  Future<void> dispose() async {
+    await _cart.close();
+  }
 
   void addProduct(String productId) {
     final cart = _cart.value;
@@ -101,5 +109,12 @@ class CartBloc {
 
   bool isEmpty() {
     return _cart?.value?.items?.isEmpty ?? true;
+  }
+
+  Future<void> send() async {
+    if(_cart.hasValue) {
+      final cart = _cart.value;
+      await _repository.send(cart);
+    }
   }
 }

@@ -17,14 +17,24 @@ class CartPage extends StatefulWidget {
 
 class _CartPageState extends State<CartPage> {
   TextEditingController _deliveryAddressController;
+  bool _sendingRequest;
   //
   CartBloc _cartBloc;
   ProductBloc _productBloc;
   UserBloc _userBloc;
 
   Future<void> _sendRequest() async {
-    // TODO Send request
-    print('Send request');
+    try {
+      setState(() {
+        _sendingRequest = true;
+      });
+      await _cartBloc.send();
+    } catch (e) {
+      // Handle error in sending request
+      setState(() {
+        _sendingRequest = false;
+      });
+    }
   }
 
   @override
@@ -34,6 +44,8 @@ class _CartPageState extends State<CartPage> {
     _cartBloc = coffeeGetIt<CartBloc>();
     _productBloc = coffeeGetIt<ProductBloc>();
     _userBloc = coffeeGetIt<UserBloc>();
+    //
+    _sendingRequest = false;
     _deliveryAddressController = TextEditingController(
         text: _cartBloc.getCurrentDeliveryAddress(
             orElse: _userBloc.getCurrentDeliveryAddress()));
@@ -58,7 +70,8 @@ class _CartPageState extends State<CartPage> {
             appBar: AppBar(
               title: Text(FlutterI18n.translate(context, 'cart.title')),
             ),
-            floatingActionButton: cart?.items?.isEmpty ?? true
+            floatingActionButton: (cart?.items?.isEmpty ?? true) ||
+                    (_sendingRequest)
                 ? null
                 : FloatingActionButton.extended(
                     icon: Icon(Icons.send),

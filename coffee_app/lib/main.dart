@@ -1,4 +1,5 @@
 import 'package:coffee_app/business/bloc/cart/cart_bloc.dart';
+import 'package:coffee_app/business/bloc/cart/cart_repository.dart';
 import 'package:coffee_app/business/bloc/products/product_bloc.dart';
 import 'package:coffee_app/business/bloc/products/product_repository.dart';
 import 'package:coffee_app/business/bloc/store/store_bloc.dart';
@@ -22,7 +23,7 @@ void run(registerEnvironmentServices) {
   registerUser();
   registerStore();
   registerProduct();
-  registerCoffee();
+  registerCart();
   // Run the application
   runApp(CoffeeApp());
 }
@@ -31,8 +32,9 @@ void registerGeneralServices() {
   coffeeGetIt.registerLazySingleton(() => createHttpClient());
 }
 
-void registerCoffee() {
+void registerCart() {
   coffeeGetIt.registerLazySingleton(() => CartBloc());
+  coffeeGetIt.registerLazySingleton((() => CartRepository()));
 }
 
 void registerStore() {

@@ -225,27 +225,28 @@ class _StoreProductsPageState extends State<StoreProductsPage>
                                                   if (isInCart) ...[
                                                     Icon(Icons.check),
                                                     Text(
-                                                        '${FlutterI18n.translate(context, 'products.added')} ${item.amount}!'),
+                                                        '${FlutterI18n.translate(context, 'products.added')} ${item.amount}'),
                                                   ],
                                                   SizedBox(width: 8),
-                                                  RawMaterialButton(
-                                                    child: Text(
-                                                      '+1',
-                                                      style: TextStyle(
-                                                          color: theme
-                                                              .primaryColor,
-                                                          fontWeight:
-                                                              FontWeight.bold),
-                                                    ),
-                                                    shape: CircleBorder(),
-                                                    constraints: BoxConstraints(
-                                                        minWidth: 32),
-                                                    padding:
-                                                        const EdgeInsets.all(8),
-                                                    onPressed: () =>
-                                                        _addProductToCart(
-                                                            product),
-                                                  ),
+                                                  // This button will be hidden
+                                                  // RawMaterialButton(
+                                                  //   child: Text(
+                                                  //     '+1',
+                                                  //     style: TextStyle(
+                                                  //         color: theme
+                                                  //             .primaryColor,
+                                                  //         fontWeight:
+                                                  //             FontWeight.bold),
+                                                  //   ),
+                                                  //   shape: CircleBorder(),
+                                                  //   constraints: BoxConstraints(
+                                                  //       minWidth: 32),
+                                                  //   padding:
+                                                  //       const EdgeInsets.all(8),
+                                                  //   onPressed: () =>
+                                                  //       _addProductToCart(
+                                                  //           product),
+                                                  // ),
                                                   SizedBox(width: 8),
                                                   FlatButton(
                                                     child: Text(
