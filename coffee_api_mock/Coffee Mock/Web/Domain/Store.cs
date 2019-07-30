@@ -15,5 +15,7 @@ namespace Web.Domain
         public WeekDay WorkingDays { get; set; }
         public virtual ICollection<ProductInStore> Products { get; set; }
         public virtual ICollection<StoreHasCategory> Categories { get; set; }
+        public virtual ICollection<UserHasStore> Users { get; set; }
+        public virtual ICollection<Request> Requests { get; set; }
     }
 }

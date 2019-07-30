@@ -42,7 +42,7 @@ namespace Web.Controllers
                 });
             return Ok(products);
         }
-
+        
         [Authorize]
         [HttpPatch("togglefavorite/{id}")]
         public async Task<IActionResult> SetFavorite([FromRoute] Guid id)

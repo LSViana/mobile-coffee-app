@@ -20,6 +20,9 @@ namespace Web.Data
         public DbSet<UserHasFavorite> UserHasFavorites { get; set; }
         public DbSet<ProductInStore> ProductInStores { get; set; }
         public DbSet<StoreHasCategory> StoreHasCategories { get; set; }
+        public DbSet<Request> Requests { get; set; }
+        public DbSet<RequestItem> RequestItems { get; set; }
+        public DbSet<UserHasStore> UserHasStores { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -45,6 +48,14 @@ namespace Web.Data
                 {
                     x.UserId,
                     x.ProductId,
+                });
+            #endregion
+            #region
+            modelBuilder.Entity<UserHasStore>()
+                .HasKey(x => new
+                {
+                    x.UserId,
+                    x.StoreId,
                 });
             #endregion
         }

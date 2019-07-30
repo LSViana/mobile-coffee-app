@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Web.Domain;
 
@@ -18,6 +16,7 @@ namespace Web.Data
         private Product productEspressoCinnamon;
         private Product productLatte;
         private User userCoffeeDrinker;
+        private User userCoffeeSeller;
 
         public Seeder(Db db)
         {
@@ -32,12 +31,24 @@ namespace Web.Data
             await SeedProducts();
             await SeedProductInStores();
             await SeedStoreHasCategories();
-            await SeedUserHasFavorite();
+            await SeedUserHasFavorites();
+            await SeedUserHasStores();
             // Commit changes
             await db.SaveChangesAsync();
         }
 
-        private async Task SeedUserHasFavorite()
+        private async Task SeedUserHasStores()
+        {
+            var userHasStore1 = new UserHasStore
+            {
+                User = userCoffeeSeller,
+                Store = storeBioBarista,
+            };
+            // Adding to database context
+            await db.UserHasStores.AddRangeAsync(userHasStore1);
+        }
+
+        private async Task SeedUserHasFavorites()
         {
             var userHasFavorite1 = new UserHasFavorite
             {
@@ -206,8 +217,19 @@ namespace Web.Data
                 DeliveryAddress = "Alameda Barão de Limeira, 539",
                 Password = standardPassword,
             };
+            userCoffeeSeller = new User
+            {
+                Id = Guid.Parse("{3e96fada-d936-41ec-b85b-543ee13334f6}"),
+                Email = "coffee.seller@email.com",
+                Name = "Coffee Seller",
+                DeliveryAddress = "Rua Helvétia, 640",
+                Password = standardPassword,
+            };
             // Adding to database context
-            await db.Users.AddRangeAsync(userCoffeeDrinker);
+            await db.Users.AddRangeAsync(
+                userCoffeeDrinker,
+                userCoffeeSeller
+            );
         }
 
     }

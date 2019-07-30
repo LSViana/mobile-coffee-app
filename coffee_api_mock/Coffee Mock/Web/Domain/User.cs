@@ -1,7 +1,6 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Web.Domain
 {
@@ -13,5 +12,7 @@ namespace Web.Domain
         public string Password { get; set; }
         public string DeliveryAddress { get; set; }
         public virtual ICollection<UserHasFavorite> Favorites { get; set; }
+        public virtual ICollection<UserHasStore> Stores { get; set; }
+        public virtual ICollection<Request> Requests { get; set; }
     }
 }

@@ -1,10 +1,12 @@
 ﻿using System;
 namespace Web.Domain
 {
-    public class RequestStatus
+    public enum RequestStatus
     {
-        public RequestStatus()
-        {
-        }
+        Sent = 0,
+        Preparing = 1,
+        Ready = 2,
+        Delivering = 3,
+        Delivered = 4,
     }
 }
