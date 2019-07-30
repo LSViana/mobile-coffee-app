@@ -32,7 +32,7 @@ namespace Web.Controllers
             //
             var invalid = false;
             invalid |= string.IsNullOrWhiteSpace(createRequest.DeliveryAddress);
-            invalid |= createRequest.DeliveryDate is null || createRequest.DeliveryDate <= DateTime.Now;
+            invalid |= createRequest.DeliveryDate != null && createRequest.DeliveryDate <= DateTime.Now;
             invalid |= createRequest.Items.Any(x => x.ProductId == Guid.Empty || x.Amount < 1);
             if(invalid)
             {
