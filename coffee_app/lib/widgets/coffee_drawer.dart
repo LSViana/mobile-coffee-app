@@ -2,6 +2,7 @@ import 'package:coffee_app/business/model/user.dart';
 import 'package:coffee_app/business/bloc/user/user_bloc.dart';
 import 'package:coffee_app/main.dart';
 import 'package:coffee_app/ui/login_page.dart';
+import 'package:coffee_app/ui/requests_page.dart';
 import 'package:coffee_app/ui/stores_page.dart';
 import 'package:coffee_app/ui/orders_page.dart';
 import 'package:coffee_app/widgets/general_error_dialog.dart';
@@ -62,7 +63,7 @@ class _CoffeeDrawerState extends State<CoffeeDrawer> {
       MenuItemData(
           titleKey: 'requests.title',
           icon: Icons.timeline,
-          pageBuilder: (context) => StoresPage()),
+          pageBuilder: (context) => RequestsPage()),
     ];
   }
 

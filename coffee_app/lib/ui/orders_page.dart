@@ -67,6 +67,7 @@ Widget _buildRequests(Iterable<Request> requests, ThemeData theme) {
       final dateFormat = DateFormat('yyyy/MM/dd, HH:mm:ss');
       //
       return ExpansionTile(
+        key: Key(request.id),
         title: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -107,6 +108,7 @@ Widget _buildRequests(Iterable<Request> requests, ThemeData theme) {
                         ),
                         ...request.items.map((item) {
                           return Row(
+                            key: Key(item.id),
                             mainAxisSize: MainAxisSize.max,
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: <Widget>[
