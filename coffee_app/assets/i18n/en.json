@@ -13,7 +13,8 @@
     "names": {
         "app": "Coffee App",
         "now": "Now",
-        "success": "Success"
+        "success": "Success",
+        "unknown": "Unknown"
     },
     "signIn": {
         "title": "Sign In",
@@ -53,6 +54,13 @@
         "reset": "Reset your Cart",
         "resetDescription": "Opening a store while having items of other store in your cart will restore it, are you sure?",
         "requestSent": "Request Sent"
+    },
+    "requestStatus": {
+        "sent": "Sent",
+        "preparing": "Preparing",
+        "ready": "Ready",
+        "delivering": "Delivering",
+        "delivered": "Delivered"
     },
     "errors": {
         "general": "Something weird happened",

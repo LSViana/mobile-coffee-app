@@ -1,3 +1,6 @@
+import 'package:coffee_app/business/model/request_status.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:intl/intl.dart';
 
 Duration parseDurationFromHours(String durationText) {
@@ -17,4 +20,12 @@ String writeDateTime(DateTime dateTime) {
 DateTime parseDateTime(String dateTimeText) {
   final dateTime = DateTime.parse(dateTimeText);
   return dateTime;
+}
+
+String writeRequestStatus(BuildContext context, int value) {
+  if (value >= 0 && value <= RequestStatus.values.length - 1) {
+    final requestStatusName = RequestStatus.values[value].toString().split('.').last;
+    return FlutterI18n.translate(context, 'requestStatus.$requestStatusName');
+  }
+  return FlutterI18n.translate(context, 'names.unknown');
 }

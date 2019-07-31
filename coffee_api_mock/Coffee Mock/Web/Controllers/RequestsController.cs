@@ -140,7 +140,8 @@ namespace Web.Controllers
                     {
                         y.Product.Id,
                         y.Product.Name,
-                        y.Product.ImageUrl
+                        y.Product.ImageUrl,
+                        PriceUnit = "R$",
                     },
                 }),
             });

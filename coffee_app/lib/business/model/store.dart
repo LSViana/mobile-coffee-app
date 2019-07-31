@@ -1,5 +1,5 @@
 import 'package:coffee_app/business/model/category.dart';
-import 'package:coffee_app/definitions/time_parser.dart';
+import 'package:coffee_app/definitions/text_formatter.dart';
 
 class Store {
   String id;

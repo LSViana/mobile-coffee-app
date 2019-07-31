@@ -1,5 +1,5 @@
 import 'package:coffee_app/business/model/cart_item.dart';
-import 'package:coffee_app/definitions/time_parser.dart';
+import 'package:coffee_app/definitions/text_formatter.dart';
 
 class Cart {
   List<CartItem> items;

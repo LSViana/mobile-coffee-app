@@ -1,7 +1,7 @@
 import 'package:coffee_app/business/model/request_item.dart';
 import 'package:coffee_app/business/model/request_status.dart';
 import 'package:coffee_app/business/model/store.dart';
-import 'package:coffee_app/definitions/time_parser.dart';
+import 'package:coffee_app/definitions/text_formatter.dart';
 
 class Request {
   String id;
