@@ -1,4 +1,4 @@
-package com.example.coffee_app;
+package lsviana.coffee_app;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;

@@ -1,6 +1,5 @@
 import 'package:coffee_app/business/bloc/cart/request_bloc.dart';
 import 'package:coffee_app/business/model/request.dart';
-import 'package:coffee_app/business/model/request_status.dart';
 import 'package:coffee_app/definitions/text_formatter.dart';
 import 'package:coffee_app/main.dart';
 import 'package:coffee_app/widgets/coffee_drawer.dart';

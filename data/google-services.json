@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "551029580798",
+    "firebase_url": "https://coffee-app-74a55.firebaseio.com",
+    "project_id": "coffee-app-74a55",
+    "storage_bucket": "coffee-app-74a55.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:551029580798:android:f14f4c5d482263b5",
+        "android_client_info": {
+          "package_name": "lsviana.coffee_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "551029580798-o3e9t6rbckkrm3872ci7s02amh73p31l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7O2ER7gqggaD-nLNEcS97HC0MoXeomSw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "551029580798-o3e9t6rbckkrm3872ci7s02amh73p31l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

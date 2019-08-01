@@ -36,6 +36,7 @@ class RequestBloc {
     await Future.wait([
       _cart.close(),
       _byStore.close(),
+      _mine.close(),
     ]);
   }
 
