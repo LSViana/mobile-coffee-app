@@ -7,6 +7,7 @@ import 'package:coffee_app/business/bloc/store/store_repository.dart';
 import 'package:coffee_app/business/bloc/user/user_bloc.dart';
 import 'package:coffee_app/business/bloc/user/user_repository.dart';
 import 'package:coffee_app/coffee_app.dart';
+import 'package:coffee_app/definitions/firebase_message_handlers.dart';
 import 'package:coffee_app/definitions/http_client.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -24,6 +25,8 @@ void run(registerEnvironmentServices) {
   registerStore();
   registerProduct();
   registerCart();
+  // Start Firebase Messaging handler
+  FirebaseMessageHandler().setupHandlers();
   // Run the application
   runApp(CoffeeApp());
 }
