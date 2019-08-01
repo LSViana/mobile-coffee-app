@@ -10,11 +10,13 @@ class RequestBloc {
   BehaviorSubject<Cart> _cart;
   RequestRepository _repository;
   BehaviorSubject<Iterable<Request>> _mine;
+  BehaviorSubject<Iterable<Request>> _byStore;
 
   RequestBloc() {
     _repository = coffeeGetIt<RequestRepository>();
     _cart = BehaviorSubject<Cart>();
     _mine = BehaviorSubject<Iterable<Request>>();
+    _byStore = BehaviorSubject<Iterable<Request>>();
     _startDefaultValues();
   }
 
@@ -28,9 +30,13 @@ class RequestBloc {
 
   Stream<Cart> get cart => _cart.stream;
   Stream<Iterable<Request>> get mine => _mine.stream;
+  Stream<Iterable<Request>> get byStore => _byStore.stream;
 
   Future<void> dispose() async {
-    await _cart.close();
+    await Future.wait([
+      _cart.close(),
+      _byStore.close(),
+    ]);
   }
 
   void addProduct(String productId) {
@@ -139,13 +145,34 @@ class RequestBloc {
 
   Future<Iterable<Request>> getMine() async {
     try {
-      _mine.add(null);
+      _mine.sink.add(null);
       final mine = await _repository.getMine();
-      _mine.add(mine);
+      _mine.sink.add(mine);
       return mine;
     } catch(e) {
-      _mine.addError(e);
+      _mine.sink.addError(e);
       return null;
+    }
+  }
+
+  Future<Iterable<Request>> getByStore(String storeId) async {
+    try {
+      _byStore.sink.add(null);
+      final byStore = await _repository.getByStore(storeId);
+      _byStore.sink.add(byStore);
+      return byStore;
+    } catch (e) {
+      _byStore.sink.addError(e);
+      return null;
+    }
+  }
+
+  Future<void> updateStatus(Request request) async {
+    if(_byStore.hasValue) {
+      await _repository.updateStatus(request.id, request.status);
+      // TODO Fix forcing recreation to update UI
+      final byStore = _byStore.value.toList();
+      _byStore.sink.add(byStore);
     }
   }
 }

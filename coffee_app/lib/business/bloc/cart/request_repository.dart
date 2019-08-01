@@ -40,4 +40,24 @@ class RequestRepository {
       throw HttpException(response.statusCode);
     }
   }
+
+  Future<Iterable<Request>> getByStore(String storeId) async {
+    final response = await _client.get('${_apiSettings.base}/requests/bystore/$storeId');
+    if(response.statusCode == HttpStatus.ok) {
+      final mineJson = jsonDecode(response.body) as List;
+      final mine = mineJson.map((item) => Request.fromJson(item));
+      return mine;
+    } else {
+      throw HttpException(response.statusCode);
+    }
+  }
+
+  Future<void> updateStatus(String id, int status) async {
+    final response = await _client.patch('${_apiSettings.base}/requests/$id/status/$status');
+    if(response.statusCode == HttpStatus.ok) {
+      // Successfully updated
+    } else {
+      throw HttpException(response.statusCode);
+    }
+  }
 }

@@ -119,7 +119,7 @@ Widget _buildRequests(Iterable<Request> requests, ThemeData theme) {
                                 style: theme.textTheme.caption.copyWith(fontSize: 10),
                               ),
                               SizedBox(width: 2),
-                              Text('${item.amount * item.price}'),
+                              Text('${(item.amount * item.price).toStringAsFixed(2)}'),
                             ],
                           );
                         }),
@@ -147,7 +147,7 @@ Widget _buildRequests(Iterable<Request> requests, ThemeData theme) {
                             ),
                             SizedBox(width: 4),
                             Text(
-                              '${request.items.map((p) => p.price * p.amount).fold(0.0, (previous, current) => previous + current)}',
+                              '${request.items.map((p) => p.price * p.amount).fold<double>(0.0, (previous, current) => previous + current).toStringAsFixed(2)}',
                               style: theme.textTheme.title,
                             ),
                           ],

@@ -8,11 +8,14 @@
         "schedule": "Schedule",
         "send": "Send",
         "cancel": "Cancel",
-        "reset": "Reset"
+        "reset": "Reset",
+        "update": "Update"
     },
     "names": {
         "app": "Coffee App",
         "now": "Now",
+        "none": "None",
+        "empty": "Empty",
         "success": "Success",
         "unknown": "Unknown"
     },
@@ -29,7 +32,8 @@
     "stores": {
         "title": "Stores",
         "open": "Open",
-        "closed": "Closed"
+        "closed": "Closed",
+        "requests": "Store Requests"
     },
     "orders": {
         "title": "Orders"
@@ -38,7 +42,9 @@
         "title": "Favorites"
     },
     "requests": {
-        "title": "Requests"
+        "title": "Requests",
+        "details": "Request Details",
+        "updateStatus": "Update status"
     },
     "products": {
         "title": "Products",
@@ -49,6 +55,7 @@
         "total": "Total",
         "deliveryAddress": "Delivery Address",
         "scheduleDelivery": "Schedule Delivery",
+        "item": "Item",
         "items": "Items",
         "amount": "Amount",
         "reset": "Reset your Cart",

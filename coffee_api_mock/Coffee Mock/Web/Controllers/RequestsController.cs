@@ -117,6 +117,28 @@ namespace Web.Controllers
             return Ok(requestsOutput);
         }
 
+        [HttpPatch("{id}/status/{status}")]
+        public async Task<IActionResult> SetStatus([FromRoute] RequestStatus status, [FromRoute] Guid id)
+        {
+            var request = await db.Requests.FindAsync(id);
+            //
+            if (request is null)
+                return NotFound();
+            //
+            if(Enum.IsDefined(typeof(RequestStatus), status))
+            {
+                request.Status = status;
+                db.Requests.Update(request);
+                await db.SaveChangesAsync();
+                // TODO Send notification
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
         public IQueryable FormatRequests(IQueryable<Request> requests)
             => requests.Select(x => new
             {
@@ -130,6 +152,12 @@ namespace Web.Controllers
                     x.Store.Id,
                     x.Store.Name,
                     x.Store.ImageUrl
+                },
+                User = new
+                {
+                    x.User.Id,
+                    x.User.Name,
+                    x.User.Email
                 },
                 Items = x.Items.Select(y => new
                 {

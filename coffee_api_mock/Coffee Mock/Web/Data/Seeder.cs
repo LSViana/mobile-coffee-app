@@ -15,6 +15,7 @@ namespace Web.Data
         private Product productEspresso;
         private Product productEspressoCinnamon;
         private Product productLatte;
+        private Product productRistretto;
         private User userCoffeeDrinker;
         private User userCoffeeSeller;
 
@@ -33,8 +34,33 @@ namespace Web.Data
             await SeedStoreHasCategories();
             await SeedUserHasFavorites();
             await SeedUserHasStores();
+            await SeedRequests();
             // Commit changes
             await db.SaveChangesAsync();
+        }
+
+        private async Task SeedRequests()
+        {
+            var request1 = new Request
+            {
+                Id = Guid.Parse("{17717a9b-9654-4f6c-a479-03facd8feae3}"),
+                CreatedAt = DateTime.Now,
+                DeliveryAddress = "Alameda Barão de Limeira, 539",
+                DeliveryDate = null,
+                Store = storeBioBarista,
+                Status = RequestStatus.Sent,
+                User = userCoffeeDrinker,
+                Items = new[] {
+                    new RequestItem {
+                        Id = Guid.Parse("{bbb534a9-e29e-47d6-865a-b26762d67922}"),
+                        Amount = 2,
+                        Price = productEspresso.Price,
+                        Product = productEspresso,
+                    },
+                },
+            };
+            // Adding to database context
+            await db.Requests.AddAsync(request1);
         }
 
         private async Task SeedUserHasStores()
@@ -133,12 +159,18 @@ namespace Web.Data
                 Product = productEspresso,
                 Store = storeStarbucks,
             };
+            var productInStore5 = new ProductInStore
+            {
+                Product = productRistretto,
+                Store = storeBioBarista,
+            };
             // Adding to database context
             await db.ProductInStores.AddRangeAsync(
                 productInStore1,
                 productInStore2,
                 productInStore3,
-                productInStore4
+                productInStore4,
+                productInStore5
             );
         }
 
@@ -171,11 +203,21 @@ namespace Web.Data
                 Price = 5m,
                 Category = categoryCoffee,
             };
+            productRistretto = new Product
+            {
+                Id = Guid.Parse("{dc105f89-c8a7-4b29-bbf8-6b01df8af4b9}"),
+                Name = "Ristretto",
+                Description = "A Ristretto is traditionally a short shot of espresso coffee made with the usual amount of finely-ground coffee beans but about half the amount of water normally used when making an espresso.",
+                Price = 5m,
+                Category = categoryCoffee,
+                ImageUrl = "https://d36bl1cjgcfngd.cloudfront.net/wp-content/uploads/sites/2/2018/06/18115512/espresso-sml.jpg",
+            };
             // Adding to database context
             await db.Products.AddRangeAsync(
                 productEspresso,
                 productEspressoCinnamon,
-                productLatte
+                productLatte,
+                productRistretto
             );
         }
 
@@ -219,7 +261,7 @@ namespace Web.Data
             };
             userCoffeeSeller = new User
             {
-                Id = Guid.Parse("{3e96fada-d936-41ec-b85b-543ee13334f6}"),
+                Id = Guid.Parse("{aaa79141-3c54-492a-b940-ef253868d319}"),
                 Email = "coffee.seller@email.com",
                 Name = "Coffee Seller",
                 DeliveryAddress = "Rua Helvétia, 640",

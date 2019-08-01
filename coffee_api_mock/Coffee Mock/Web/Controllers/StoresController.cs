@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -38,6 +39,24 @@ namespace Web.Controllers
                     y.Category.Name,
                 }),
             }).ToArrayAsync());
+        }
+
+        [HttpGet("byuser/{userId}")]
+        public IActionResult ListByUser([FromRoute] Guid userId)
+        {
+            var userStores = db.UserHasStores
+                .Where(x => x.UserId == userId)
+                .Select(x => x.Store)
+                .Select(x => new
+                {
+                    x.Id,
+                    x.Name,
+                    x.ImageUrl,
+                    x.OpeningTime,
+                    x.ClosingTime,
+                });
+            //
+            return Ok(userStores);
         }
     }
 }

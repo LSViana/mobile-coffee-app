@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Web.Data;
 
 namespace Web.Controllers
@@ -22,21 +23,22 @@ namespace Web.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Read([FromRoute] Guid id)
         {
-            var user = await db.Users.FindAsync(id);
-            if(user != null)
-            {
-                return Ok(new
+            var user = await db.Users
+                .Select(x => new
                 {
-                    user.Id,
-                    user.Name,
-                    user.Email,
-                    user.DeliveryAddress,
-                });
-            }
-            else
+                    x.Id,
+                    x.Name,
+                    x.Email,
+                    x.DeliveryAddress,
+                    UserHasStore = x.Stores.Any(),
+                })
+                .FirstOrDefaultAsync(x => x.Id == id);
+            //
+            if (user != null)
             {
-                return NotFound();
+                return Ok(user);
             }
+            return NotFound();
         }
     }
 }

@@ -26,4 +26,15 @@ class StoreRepository {
       throw HttpException(response.statusCode);
     }
   }
+
+  Future<Iterable<Store>> getByUser(String userId) async {
+    final response = await _client.get('${_apiSettings.base}/stores/byuser/$userId');
+    if(response.statusCode == HttpStatus.ok) {
+      final jsonByUser = jsonDecode(response.body) as List;
+      final byUser = jsonByUser.map((value) => Store.fromJson(value));
+      return byUser;
+    } else {
+      throw HttpException(response.statusCode);
+    }
+  }
 }
