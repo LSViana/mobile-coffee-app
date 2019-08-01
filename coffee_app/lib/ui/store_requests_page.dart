@@ -23,6 +23,7 @@ class _StoreRequestsPageState extends State<StoreRequestsPage> {
   RequestBloc _requestBloc;
 
   Future<void> _showUpdateStatusDialog(Request request) async {
+    final originalStatus = request.status;
     final statusChanged = await showDialog(
           context: context,
           builder: (context) => new RequestDetailsDialog(request: request),
@@ -46,6 +47,8 @@ class _StoreRequestsPageState extends State<StoreRequestsPage> {
       setState(() {
         updatingStatus = false;
       });
+    } else {
+      request.status = originalStatus;
     }
   }
 
