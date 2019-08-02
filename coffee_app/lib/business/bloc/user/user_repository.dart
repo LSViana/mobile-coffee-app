@@ -71,4 +71,13 @@ class UserRepository {
       throw HttpException(response.statusCode);
     }
   }
+
+  Future<void> removeFcmToken() async {
+    final response = await _client.post('${_apiSettings.base}/authentication/removefcmtoken');
+    if(response.statusCode == HttpStatus.ok) {
+      // Successfully removed FCM Token from API
+    } else {
+      throw HttpException(response.statusCode);
+    }
+  }
 }

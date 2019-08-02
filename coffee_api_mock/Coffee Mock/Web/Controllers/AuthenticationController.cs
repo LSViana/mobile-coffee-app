@@ -6,10 +6,13 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Web.Data;
+using Web.Extensions;
 using Web.Transfer.User;
 
 namespace Web.Controllers
@@ -71,6 +74,21 @@ namespace Web.Controllers
             {
                 return NotFound();
             }
+        }
+
+        [HttpPost("removefcmtoken")]
+        [Authorize]
+        public async Task<IActionResult> RemoveFcmToken()
+        {
+            var user = await this.GetUserAuthenticated(db);
+            if(user is null)
+            {
+                return NotFound();
+            }
+            user.FcmToken = null;
+            db.Users.Update(user);
+            await db.SaveChangesAsync();
+            return Ok();
         }
     }
 }

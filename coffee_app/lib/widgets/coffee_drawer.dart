@@ -35,10 +35,19 @@ class _CoffeeDrawerState extends State<CoffeeDrawer> {
   }
 
   Future<void> _logout() async {
-    await _userBloc.removeAuthenticated();
-    Navigator.of(context).pop();
-    await Navigator.of(context)
-        .pushReplacement(MaterialPageRoute(builder: (context) => LoginPage()));
+    try {
+      await _userBloc.removeFcmToken();
+      await _userBloc.removeAuthenticated();
+      Navigator.of(context).pop();
+      await Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => LoginPage()));
+    } catch (e) {
+      // TODO Add specific error handling
+      showDialog(
+        context: context,
+        builder: (context) => GeneralErrorDialog()
+      );
+    }
   }
 
   @override

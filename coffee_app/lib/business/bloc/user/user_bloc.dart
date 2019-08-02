@@ -44,10 +44,13 @@ class UserBloc {
     }
   }
 
-  Future<void> removeAuthenticated() async
+  Future<void> removeAuthenticated()
     => _repository.removeAuthenticated();
 
   String getCurrentDeliveryAddress() {
     return _current?.value?.deliveryAddress ?? '';
   }
+
+  Future<void> removeFcmToken()
+    => _repository.removeFcmToken();
 }

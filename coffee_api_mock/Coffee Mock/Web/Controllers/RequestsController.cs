@@ -77,7 +77,7 @@ namespace Web.Controllers
             var tasks = new List<Task>();
             foreach (var storeUserId in storeUserIds)
             {
-                tasks.Add(this.NotifyUser(db, configuration, storeUserId, $"Request from {user.Name} worth R$ {request.Items.Sum(x => x.Price * x.Amount)}", "Access Coffee App for further details"));
+                tasks.Add(this.NotifyUser(db, configuration, storeUserId, $"Request from {user.Name} worth R$ {request.Items.Sum(x => x.Price * x.Amount)}", "Access Orders Page for further details"));
             }
             await Task.WhenAll(tasks);
             //
@@ -144,7 +144,10 @@ namespace Web.Controllers
                 request.Status = status;
                 db.Requests.Update(request);
                 await db.SaveChangesAsync();
-                // TODO Send notification
+                //
+                var requestCustomerId = request.UserId;
+                await this.NotifyUser(db, configuration, requestCustomerId, $"Your request created at {request.CreatedAt.ToShortTimeString()} is now: {request.Status}", "Access the Orders page for further details");
+                //
                 return Ok();
             }
             else
