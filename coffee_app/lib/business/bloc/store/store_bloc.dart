@@ -19,6 +19,7 @@ class StoreBloc {
 
   Future<void> dispose() async {
     _all.close();
+    _byUser.close();
   }
 
   Future<Iterable<Store>> get() async {

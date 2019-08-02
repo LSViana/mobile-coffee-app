@@ -25,10 +25,13 @@ void run(registerEnvironmentServices) {
   registerStore();
   registerProduct();
   registerCart();
-  // Start Firebase Messaging handler
-  FirebaseMessageHandler().setupHandlers();
+  registerFirebaseServices();
   // Run the application
   runApp(CoffeeApp());
+}
+
+void registerFirebaseServices() {
+  coffeeGetIt.registerLazySingleton(() => FirebaseMessageHandler());
 }
 
 void registerGeneralServices() {

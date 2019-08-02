@@ -52,12 +52,18 @@ namespace Web.Controllers
                             SecurityAlgorithms.HmacSha256
                         ),
                 });
+                // Updating user FCM token
+                user.FcmToken = login.FcmToken;
+                db.Users.Update(user);
+                await db.SaveChangesAsync();
+                // Returning result
                 return Ok(new
                 {
                     user.Id,
                     user.Name,
                     user.Email,
                     user.DeliveryAddress,
+                    user.FcmToken,
                     Token = tokenHandler.WriteToken(jwtToken),
                 });
             }

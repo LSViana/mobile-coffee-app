@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Web.Data;
 using Web.Domain;
 using Web.Extensions;
@@ -16,10 +18,12 @@ namespace Web.Controllers
     public class RequestsController : ControllerBase
     {
         private readonly Db db;
+        private readonly IConfiguration configuration;
 
-        public RequestsController(Db db)
+        public RequestsController(Db db, IConfiguration configuration)
         {
             this.db = db;
+            this.configuration = configuration;
         }
 
         [Authorize]
@@ -39,7 +43,9 @@ namespace Web.Controllers
                 return BadRequest();
             }
             //
-            var store = await db.Stores.FindAsync(createRequest.StoreId);
+            var store = await db.Stores
+                .Include(x => x.Users)
+                .FirstOrDefaultAsync(x => x.Id == createRequest.StoreId);
             var products = await db.Products.ToArrayAsync();
             // TODO Validate if that product is in that store
             //
@@ -66,7 +72,15 @@ namespace Web.Controllers
             //
             await db.Requests.AddAsync(request);
             await db.SaveChangesAsync();
-            // TODO Add notification
+            //
+            var storeUserIds = store.Users.Select(x => x.UserId);
+            var tasks = new List<Task>();
+            foreach (var storeUserId in storeUserIds)
+            {
+                tasks.Add(this.NotifyUser(db, configuration, storeUserId, $"Request from {user.Name} worth R$ {request.Items.Sum(x => x.Price * x.Amount)}", "Access Coffee App for further details"));
+            }
+            await Task.WhenAll(tasks);
+            //
             return Ok();
         }
 

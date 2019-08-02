@@ -1,6 +1,7 @@
 import 'package:coffee_app/business/exceptions/not_found_exception.dart';
 import 'package:coffee_app/business/transfer/authentication.dart';
 import 'package:coffee_app/business/bloc/user/user_bloc.dart';
+import 'package:coffee_app/definitions/firebase_message_handlers.dart';
 import 'package:coffee_app/main.dart';
 import 'package:coffee_app/ui/stores_page.dart';
 import 'package:coffee_app/widgets/error_dialog.dart';
@@ -21,11 +22,16 @@ class LoginPageState extends State<LoginPage> {
   UserBloc _userBloc;
   bool _authenticating;
 
+  FirebaseMessageHandler _firebaseHandler;
+
   Future<void> _formSubmit() async {
     _formKey.currentState.save();
     if (_formKey.currentState.validate()) {
       try {
         _authenticating = true;
+        // Start Firebase Messaging handler
+        final fcmToken = await _firebaseHandler.setupHandlers();
+        _authentication.fcmToken = fcmToken;
         final authenticated = await _userBloc.authenticate(_authentication);
         await _userBloc.saveAuthenticated(authenticated);
         await Navigator.of(context).pushReplacement(MaterialPageRoute(
@@ -62,6 +68,7 @@ class LoginPageState extends State<LoginPage> {
     super.initState();
     //
     _userBloc = coffeeGetIt<UserBloc>();
+    _firebaseHandler = coffeeGetIt<FirebaseMessageHandler>();
     _authentication = Authentication();
     _formKey = GlobalKey<FormState>();
     _authenticating = false;

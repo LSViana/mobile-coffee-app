@@ -1,27 +1,39 @@
 import 'dart:io';
 
+import 'package:coffee_app/business/bloc/user/user_bloc.dart';
+import 'package:coffee_app/main.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 class FirebaseMessageHandler {
   FirebaseMessaging _firebaseMessaging;
+  UserBloc _userBloc;
 
   FirebaseMessageHandler() {
     _firebaseMessaging = FirebaseMessaging();
+    _userBloc = coffeeGetIt<UserBloc>();
   }
 
-  Future<void> setupHandlers() async {
+  Future<String> setupHandlers() async {
     if (Platform.isIOS) {
       // TODO Add notifications for iOS
       _requestiOSPermissions();
     }
-    final token = await _firebaseMessaging.getToken();
-    print('Token acquired: $token');
+    String token;
+    if(await _userBloc.isAuthenticated()) {
+      final authenticated = await _userBloc.getAuthenticated();
+      token = authenticated.fcmToken;
+    }
+    else {
+      token = await _firebaseMessaging.getToken();
+    }
     //
     _firebaseMessaging.configure(
       onResume: (json) => _printMessageFirebase('resume', json),
       onLaunch: (json) => _printMessageFirebase('launch', json),
       onMessage: (json) => _printMessageFirebase('message', json),
     );
+    //
+    return token;
   }
 
   void _requestiOSPermissions() {
