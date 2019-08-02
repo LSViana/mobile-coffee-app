@@ -9,7 +9,8 @@
         "send": "Send",
         "cancel": "Cancel",
         "reset": "Reset",
-        "update": "Update"
+        "update": "Update",
+        "ok": "Ok"
     },
     "names": {
         "app": "Coffee App",

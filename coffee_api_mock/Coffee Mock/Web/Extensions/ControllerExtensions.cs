@@ -49,7 +49,6 @@ namespace Web.Extensions
                 data = new
                 {
                     click_action = "FLUTTER_NOTIFICATION_CLICK",
-                    status = 1,
                 },
                 to = user.FcmToken
             }), Encoding.UTF8, "application/json");

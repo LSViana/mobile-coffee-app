@@ -1,3 +1,4 @@
+import 'package:coffee_app/definitions/firebase_message_handlers.dart';
 import 'package:coffee_app/ui/stores_page.dart';
 import 'package:coffee_app/ui/login_page.dart';
 import 'package:coffee_app/business/bloc/user/user_bloc.dart';
@@ -55,6 +56,9 @@ class _SplashPageState extends State<SplashPage> {
     await Future.delayed(Duration(seconds: 1));
     //
     final isAuthenticated = await _userBloc.isAuthenticated();
+    if(isAuthenticated) {
+      await coffeeGetIt<FirebaseMessageHandler>().setupHandlers();
+    }
     final nextRoute = isAuthenticated ? StoresPage() : LoginPage();
     Navigator.of(context).pushReplacement(MaterialPageRoute(
       builder: (context) => nextRoute,
